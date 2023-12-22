@@ -1,0 +1,103 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "Butterfly/1.9.2": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/Butterfly.dll": {
+            "related": ".runtimeconfig.json;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Butterfly.dll": {
+            "related": ".runtimeconfig.json;.xml"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Butterfly/1.9.2": {
+      "sha512": "KvOQYOfP/RGDhne0j0uj/oRpMpBqCA/+mts/L2Se7Y3X5TiuDpcNT4spYDpIitqYDSHr76HLuMdTMh37WF4ngA==",
+      "type": "package",
+      "path": "butterfly/1.9.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "butterfly.1.9.2.nupkg.sha512",
+        "butterfly.nuspec",
+        "lib/net7.0/Butterfly.dll",
+        "lib/net7.0/Butterfly.runtimeconfig.json",
+        "lib/net7.0/Butterfly.xml"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "Butterfly >= 1.9.2"
+    ]
+  },
+  "packageFolders": {
+    "/home/dmitry/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/home/dmitry/GameServer/GameServer.csproj",
+      "projectName": "GameServer",
+      "projectPath": "/home/dmitry/GameServer/GameServer.csproj",
+      "packagesPath": "/home/dmitry/.nuget/packages/",
+      "outputPath": "/home/dmitry/GameServer/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/home/dmitry/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "dependencies": {
+          "Butterfly": {
+            "target": "Package",
+            "version": "[1.9.2, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.114/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

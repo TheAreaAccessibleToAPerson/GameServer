@@ -1,0 +1,5 @@
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.csproj.AssemblyReference.cache
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.GeneratedMSBuildEditorConfig.editorconfig
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.AssemblyInfoInputs.cache
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.AssemblyInfo.cs
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.csproj.CoreCompileInputs.cache
