@@ -4,7 +4,7 @@ using Butterfly;
 
 namespace server.receive
 {
-    public sealed class TcpShell : Controller.LocalField<Setting.Ssl>
+    public sealed class TcpShell : Controller.LocalField<Setting.Tcp>
     {
         public const string NAME = "TcpShell";
 
@@ -22,7 +22,7 @@ namespace server.receive
             public struct Echo
             {
                 public const string SUBSCRIBE = NAME + ":Subscribe";
-                public const string UNSUBSCRIBE = NAME + ":Subscribe";
+                public const string UNSUBSCRIBE = NAME + ":Unsubscribe";
             }
         }
 
@@ -160,7 +160,7 @@ namespace server.receive
             }
         }
 
-        private sealed class Tcp : Controller.Board.LocalField<Setting.Ssl>
+        private sealed class Tcp : Controller.Board.LocalField<Setting.Tcp>
         {
             public const string NAME = "Tcp";
 

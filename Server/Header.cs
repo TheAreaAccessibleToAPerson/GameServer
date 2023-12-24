@@ -18,6 +18,8 @@ namespace server
             public const string TCP_RECEIVE = "TcpReceive";
             public const string TCP_SEND = "TcpSend";
 
+            public const string WORLD = "World";
+
             public const string SSL_RECEIVE = "SslReceive";
             public const string SSL_SEND = "SslSend";
 
@@ -30,6 +32,7 @@ namespace server
         {
             listen_events(Events.SYSTEM, Events.SYSTEM);
             listen_events(Events.TCP_RECEIVE, Events.TCP_RECEIVE);
+            listen_events(Events.RECEIVE_NEW_CONNECT, Events.RECEIVE_NEW_CONNECT);
             listen_events(Events.TCP_SEND, Events.TCP_SEND);
             listen_events(Events.WORK, Events.WORK);
 
@@ -37,6 +40,9 @@ namespace server
                 .output_to(_logger.WriteSystem, Events.SYSTEM);
 
             listen_message<int, string>(Logger.Type.CLIENT)
+                .output_to(_logger.WriteClient, Events.SYSTEM);
+
+            listen_message<int, string>(Logger.Type.WORLD)
                 .output_to(_logger.WriteClient, Events.SYSTEM);
         }
 
@@ -66,7 +72,7 @@ namespace server
 
         void ReadLine.IInformation.Command(string command)
         {
-            new Client().Start();
+            //new Client().Start();
         }
     }
 }

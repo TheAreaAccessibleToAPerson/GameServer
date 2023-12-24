@@ -20,11 +20,11 @@ namespace server.receive
             }
         }
 
-        IInput<string> i_systemLogger;
+        IInput<int, string> i_systemLogger;
 
         void Construction()
         {
-            send_message<string>
+            send_message<int, string>
                 (ref i_systemLogger, Logger.Type.SYSTEM);
 
             listen_impuls(BUS.Impuls.RESTART)
@@ -84,14 +84,14 @@ namespace server.receive
         void SystemLogger(string info)
         {
             if (StateInformation.IsCallConstruction)
-                i_systemLogger.To($"{NAME}:{info}");
+                i_systemLogger.To(Logger.INFO, $"{NAME}:{info}");
         }
 
         private sealed class Ssl : Controller.Board.LocalField<Setting.Ssl>
         {
             public const string NAME = "Ssl";
 
-            IInput<string> i_systemLogger;
+            IInput<int, string> i_systemLogger;
 
             IInput i_start, i_restart;
 
@@ -101,7 +101,7 @@ namespace server.receive
             {
                 _sslListen = new SslSocket(Field.Address, Field.Port, Destroy);
 
-                send_message<string>(ref i_systemLogger,
+                send_message<int, string>(ref i_systemLogger,
                     Logger.Type.SYSTEM);
 
                 send_message(ref _sslListen.I_sendNewClient,
@@ -153,7 +153,7 @@ namespace server.receive
             void SystemLogger(string info)
             {
                 if (StateInformation.IsCallConstruction)
-                    i_systemLogger.To($"{NAME}:{info}");
+                    i_systemLogger.To(Logger.INFO, $"{NAME}:{info}");
             }
 
             private sealed class SslSocket : TcpListener

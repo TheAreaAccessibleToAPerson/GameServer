@@ -3,9 +3,9 @@ using Butterfly;
 namespace server.client.gameSession
 {
     public abstract class Controller : Butterfly.Controller.Board.LocalField<client.ConnectedInformation>,
-        IReceive
+        Connected.IWorldReceive
     {
-        private const string NAME = "GameSession:";
+        private const string NAME = "GameSession";
 
         protected Data Data = new();
 
@@ -13,31 +13,14 @@ namespace server.client.gameSession
 
         protected IInput<int, string> I_clientLogger;
 
-        protected void Process()
-        {
-        }
+        protected IInput<Connected.IWorldReceive> I_addToWorld;
+        protected IInput<string> I_removeFromWorld;
 
         protected void ReceiveTcp(byte[] message, int length)
         {
         }
 
         protected void ReceiveSsl(byte[] message, int length)
-        {
-        }
-
-        void IReceive.Send(string message)
-        {
-        }
-
-        void IReceive.Send(byte[] message)
-        {
-        }
-
-        void IReceive.Send(string client, string message)
-        {
-        }
-
-        void IReceive.Send(string client, byte[] message)
         {
         }
 
@@ -59,11 +42,57 @@ namespace server.client.gameSession
                 I_clientLogger.To(Logger.WARNING, $"{NAME}:{GetKey()}[{info}]");
         }
 
+        protected void Process()
+        {
+            lock (_state.Locker)
+            {
+                if (_state.IsDestroy)
+                {
+                    LoggerWarning("Невозможно продолжить процесс смены состояния." +
+                        $"CurrentState:{_state.CurrentState}.");
+
+                    return;
+                }
+
+                if (_state.HasNone())
+                {
+                    // Получаем данные из базы данных.
+                    if (_state.SetLoadDbData(out string info))
+                    {
+                        LoggerInfo(info);
+
+                        //ClientsManager.DBLoadClientData(Data);
+
+                        invoke_event(() => 
+                        {
+                            if (_state.HasNone()) 
+                                Destroy($"CurrentState:{_state.CurrentState}.Не были получены данные из BD.");
+                        },
+                        2000, Header.Events.SYSTEM);
+                    }
+                    else LoggerError(info);
+                }
+                else if (_state.HasLoadDBData()) 
+                {
+                    if (_state.SetAddToWorld(out string info))
+                    {
+                        LoggerInfo(info);
+
+                        I_addToWorld.To(this);
+                    }
+                    else LoggerError(info);
+                }
+            }
+        }
+
         protected void Destroy(string info)
         {
             LoggerInfo(info);
 
             destroy();
         }
+
+
+        string Connected.IWorldReceive.GetNickname() => Data.Name;
     }
 }

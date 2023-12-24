@@ -6,11 +6,11 @@ namespace server
     {
         public const string NAME = "Server";
 
-        IInput<string> i_systemLogger;
+        IInput<int, string> i_systemLogger;
 
         void Construction()
         {
-            send_message<string>
+            send_message<int, string>
                 (ref i_systemLogger, Logger.Type.SYSTEM);
 
             obj<ClientsManager>(ClientsManager.NAME);
@@ -19,6 +19,7 @@ namespace server
             obj<receive.TcpShell>(receive.TcpShell.NAME, Field.TcpSetting);
 
             obj<BD.AuthorizationShell>(BD.AuthorizationShell.NAME, Field.BDSetting);
+            obj<BD.LoadClientData>(BD.LoadClientData.NAME, Field.BDSetting);
         }
 
         void Start() => SystemLogger("Start");
@@ -29,7 +30,7 @@ namespace server
         void SystemLogger(string info)
         {
             if (StateInformation.IsCallConstruction)
-                i_systemLogger.To($"{NAME}:{info}.");
+                i_systemLogger.To(Logger.INFO, $"{NAME}:{info}.");
         }
     }
 }

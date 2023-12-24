@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using Butterfly;
+using server.client;
 
 namespace server
 {
@@ -13,21 +14,20 @@ namespace server
         {
             public struct Message
             {
-                public const string LISTEN_CONNECT_CLIENTS
-                    = NAME + ":ListenConnectClients";
-
+                public const string LISTEN_CONNECT_CLIENTS = NAME + ":ListenConnectClients";
             }
 
             public struct Echo 
             {
-                public const string CREATING_CLIENT
-                    = NAME + ":CreatingClient";
+                public const string CREATING_CLIENT = NAME + ":CreatingClient";
             }
         }
 
         void Construction()
         {
-            listen_message<Socket>(BUS.Message.LISTEN_CONNECT_CLIENTS)
+            obj<World>(World.NAME);
+
+            listen_message<System.Net.Sockets.Socket>(BUS.Message.LISTEN_CONNECT_CLIENTS)
                 .output_to((socket) =>
                 {
                     string name = $"{((IPEndPoint)socket.RemoteEndPoint).Address}" +

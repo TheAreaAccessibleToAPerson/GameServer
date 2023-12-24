@@ -46,7 +46,6 @@ namespace server.client
 
         void Construction()
         {
-
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace server.client.player 
 {
-    public sealed class Enemy : Controller
+    public sealed class Enemy 
     {
     }
 }

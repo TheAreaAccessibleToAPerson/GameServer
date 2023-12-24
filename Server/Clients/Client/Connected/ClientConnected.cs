@@ -1,4 +1,4 @@
-namespace server.client 
+namespace server.client
 {
     public class Connected : gameSession.Controller
     {
@@ -16,8 +16,45 @@ namespace server.client
             add_event(Header.Events.TCP_RECEIVE, Field.Tcp.Receive);
 
             input_to(ref Data.Process, Header.Events.SYSTEM, Process);
+
+            send_echo_1_2<Connected.IWorldReceive, bool, World.IClientReceive>
+                (ref I_addToWorld, World.BUS.Echo.ADD)
+                    .output_to((result, worldReseive) =>
+                    {
+                        if (result)
+                        {
+                            LoggerInfo($"Клиент был успешно добавлен в мир.");
+
+                            Process();
+                        }
+                        else 
+                        {
+                            LoggerError($"Неудалось добавить клинта в мир.");
+
+                            destroy();
+                        }
+                    },
+                    Header.Events.SYSTEM);
+
+            send_echo_1_1<string, bool>(ref I_removeFromWorld, World.BUS.Echo.REMOVE)
+                .output_to((result) => 
+                {
+                    if (result)
+                    {
+                    }
+                    else 
+                    {
+                    }
+                },
+                Header.Events.SYSTEM);
         }
 
         void Start() { }
+
+        public interface IWorldReceive
+        {
+            public string GetNickname();
+            public string GetKey();
+        }
     }
 }

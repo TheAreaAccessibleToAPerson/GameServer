@@ -2,8 +2,7 @@ using Butterfly;
 
 namespace server.client.room
 {
-    public sealed class Default : Controller.Board.LocalField<Setting>,
-        IReceive
+    public sealed class Default : Controller.Board.LocalField<Setting>
     {
         void Construction()
         {
@@ -12,10 +11,5 @@ namespace server.client.room
         void Start()
         {
         }
-
-        void IReceive.Send(string message){}
-        void IReceive.Send(byte[] message){}
-        void IReceive.Send(string client, string message){}
-        void IReceive.Send(string client, byte[] message){}
     }
 }

@@ -94,10 +94,5 @@ namespace server.client.unit
         public int PhysicsAttack { private set; get; }
 
         public int M { private set; get; }
-        public int M { private set; get; }
-        public int M { private set; get; }
-        public int M { private set; get; }
-        public int M { private set; get; }
-        public int M { private set; get; }
     }
 }

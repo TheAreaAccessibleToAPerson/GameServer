@@ -37,7 +37,7 @@ namespace server.client.connect
         public bool IsSuccessVerification()
             => _verificationResult.HasFlag(Verification.Success);
 
-        public int Index { private set; get; }
+        public int Index { set; get; }
 
         public string Login { private set; get; } = "";
         private readonly int _loginMinLength;

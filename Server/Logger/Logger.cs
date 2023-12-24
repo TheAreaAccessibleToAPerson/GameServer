@@ -10,6 +10,7 @@ namespace server
         {
             public const string SYSTEM = "SystemInformation";
             public const string CLIENT = "ClientInformation";
+            public const string WORLD = "WorldInformation";
         }
 
         public void WriteSystem(int type, string info)

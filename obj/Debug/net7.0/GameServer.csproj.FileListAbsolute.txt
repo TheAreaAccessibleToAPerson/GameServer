@@ -3,3 +3,15 @@
 /home/dmitry/GameServer/obj/Debug/net7.0/GameServer.AssemblyInfoInputs.cache
 /home/dmitry/GameServer/obj/Debug/net7.0/GameServer.AssemblyInfo.cs
 /home/dmitry/GameServer/obj/Debug/net7.0/GameServer.csproj.CoreCompileInputs.cache
+/home/dmitry/GameServer/bin/Debug/net7.0/GameServer
+/home/dmitry/GameServer/bin/Debug/net7.0/GameServer.deps.json
+/home/dmitry/GameServer/bin/Debug/net7.0/GameServer.runtimeconfig.json
+/home/dmitry/GameServer/bin/Debug/net7.0/GameServer.dll
+/home/dmitry/GameServer/bin/Debug/net7.0/GameServer.pdb
+/home/dmitry/GameServer/bin/Debug/net7.0/Butterfly.dll
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.csproj.CopyComplete
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.dll
+/home/dmitry/GameServer/obj/Debug/net7.0/refint/GameServer.dll
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.pdb
+/home/dmitry/GameServer/obj/Debug/net7.0/GameServer.genruntimeconfig.cache
+/home/dmitry/GameServer/obj/Debug/net7.0/ref/GameServer.dll
