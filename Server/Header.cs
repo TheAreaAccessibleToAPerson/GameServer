@@ -43,7 +43,7 @@ namespace server
                 .output_to(_logger.WriteClient, Events.SYSTEM);
 
             listen_message<int, string>(Logger.Type.WORLD)
-                .output_to(_logger.WriteClient, Events.SYSTEM);
+                .output_to(_logger.WriteWorld, Events.SYSTEM);
         }
 
         public const string ADDRESS = "127.0.0.1";

@@ -26,7 +26,7 @@ namespace server.receive
             }
         }
 
-        readonly Dictionary<int, client.ConnectController.ITcpConnectionReceive> _clients
+        readonly Dictionary<string, client.ConnectController.ITcpConnectionReceive> _clients
             = new();
 
         IInput<int, string> i_systemLogger;
@@ -37,7 +37,7 @@ namespace server.receive
             send_message<int, string>
                 (ref i_systemLogger, Logger.Type.SYSTEM);
 
-            listen_echo_2_1<int, client.ConnectController.ITcpConnectionReceive, bool>
+            listen_echo_2_1<string, client.ConnectController.ITcpConnectionReceive, bool>
                 (BUS.Echo.SUBSCRIBE)
                     .output_to((key, newClient, @return) =>
                     {
@@ -62,7 +62,7 @@ namespace server.receive
                     },
                     Header.Events.RECEIVE_NEW_CONNECT);
 
-            listen_echo_1_1<int, bool>(BUS.Echo.UNSUBSCRIBE)
+            listen_echo_1_1<string, bool>(BUS.Echo.UNSUBSCRIBE)
                 .output_to((key, @return) =>
                 {
                     if (_clients.Remove(key))

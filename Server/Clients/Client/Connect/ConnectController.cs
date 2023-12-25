@@ -23,7 +23,8 @@ namespace server.client
         protected IInput<string> I_unsubscribeToReceiveTcpConnection;
 
         protected readonly connect.State State = new();
-        protected connect.Data Data;
+
+        protected connect.Data Data = new(4, 16, 4, 16);
 
         protected void Process()
         {

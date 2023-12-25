@@ -32,7 +32,21 @@ namespace server.client
             return true;
         }
 
-        public void ReceiveUpdate()
+        public new void Send(byte[] buffer)
+        {
+            try 
+            {
+                base.Send(buffer);
+            }
+            catch (Exception ex)
+            {
+                _isRunning = false;
+
+                Destroy(ex.ToString());
+            }
+        }
+
+        public void Receive()
         {
             if (_isRunning == false) return;
 
@@ -42,6 +56,10 @@ namespace server.client
                 {
                     byte[] buffer = new byte[_bufferSize];
                     int size = Receive(buffer);
+
+                    string str = $"[SIZE:{size}]\n";
+                    for (int i = 0; i < size; i++) str += buffer[i] + " ";
+                    System.Console.WriteLine(str);
 
                     if (size >= NetWork.HEADER_LENGTH)
                     {
@@ -75,11 +93,6 @@ namespace server.client
 
                 Destroy(ex.ToString());
             }
-        }
-
-        public void Receive()
-        {
-            if (_isRunning == false) return;
         }
 
         public bool Stop()

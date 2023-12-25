@@ -32,8 +32,6 @@ namespace server.client
 
                             destroy();
                         }
-
-                        DecrementEvent();
                     },
                     Header.Events.SYSTEM);
 
@@ -72,7 +70,7 @@ namespace server.client
 
         void Start()
         {
-            LoggerInfo("Start");
+            Data.Ssl.Start();
 
             invoke_event(() => 
             {
@@ -82,16 +80,23 @@ namespace server.client
                 }
             }, 
             2000, Header.Events.SYSTEM);
+
+            LoggerInfo("Start");
         }
 
-        void Destruction()
+        void Destruction() 
         {
-
+            LoggerInfo("Destruction");
         }
 
         void Stop()
         {
             LoggerInfo("Stop");
+        }
+
+        void Destroyed()
+        {
+            LoggerInfo("Destroyed");
         }
     }
 }

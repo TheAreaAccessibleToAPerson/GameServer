@@ -58,5 +58,28 @@ namespace server
             }
             else throw new Exception("");
         }
+
+        public void WriteWorld(int type, string info)
+        {
+            if (type == INFO)
+            {
+                System.Console.ForegroundColor = System.ConsoleColor.White;
+
+                System.Console.WriteLine(info);
+            }
+            else if (type == WARNING)
+            {
+                System.Console.ForegroundColor = System.ConsoleColor.Yellow;
+
+                System.Console.WriteLine(info);
+            }
+            else if (type == ERROR)
+            {
+                System.Console.ForegroundColor = System.ConsoleColor.Red;
+
+                System.Console.WriteLine(info);
+            }
+            else throw new Exception("");
+        }
     }
 }
