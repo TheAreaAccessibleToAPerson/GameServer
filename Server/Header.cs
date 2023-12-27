@@ -34,6 +34,7 @@ namespace server
             listen_events(Events.TCP_RECEIVE, Events.TCP_RECEIVE);
             listen_events(Events.RECEIVE_NEW_CONNECT, Events.RECEIVE_NEW_CONNECT);
             listen_events(Events.TCP_SEND, Events.TCP_SEND);
+            listen_events(Events.SSL_SEND, Events.SSL_SEND);
             listen_events(Events.WORK, Events.WORK);
 
             listen_message<int, string>(Logger.Type.SYSTEM)

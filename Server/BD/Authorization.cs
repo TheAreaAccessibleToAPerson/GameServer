@@ -31,9 +31,10 @@ namespace server.BD
             {
                 safe_listen_message<client.connect.Data>(BUS.Message.VERIFICATION,
                     Header.Events.BD_AUTHORIZATION, AuthorizationShell.NAME)
-                        .output_to((client, confirm) =>
+                        .output_to((clientData, confirm) =>
                         {
-                            client.IsSuccessVerification();
+                            clientData.ReturnVerificationResult
+                                (client.connect.Data.Verification.Success);
 
                             confirm();
                         });

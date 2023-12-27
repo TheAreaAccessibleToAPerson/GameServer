@@ -32,12 +32,14 @@ namespace server.client
 
                             destroy();
                         }
+
+                        DecrementEvent();
                     },
                     Header.Events.SYSTEM);
 
             send_echo_1_1<string, bool>
                 (ref I_unsubscribeToReceiveTcpConnection, receive.TcpShell.BUS.Echo.UNSUBSCRIBE)
-                    .output_to((result) => 
+                    .output_to((result) =>
                     {
                         if (result)
                         {
@@ -45,7 +47,7 @@ namespace server.client
 
                             Process();
                         }
-                        else 
+                        else
                         {
                             LoggerError("Неудалось отписаться от прослушки входящего Tcp соединения.");
 
@@ -57,7 +59,7 @@ namespace server.client
                     Header.Events.SYSTEM);
 
             send_echo_2_0(ref I_creatingConnectedClient, ClientsManager.BUS.Echo.CREATING_CLIENT)
-                .output_to(() => 
+                .output_to(() =>
                 {
                     LoggerInfo("Клиент подключился.");
 
@@ -72,31 +74,68 @@ namespace server.client
         {
             Data.Ssl.Start();
 
-            invoke_event(() => 
+            invoke_event(() =>
             {
-                if (State.HasReceiveLoginAndPassword())
+                lock (State.Locker)
                 {
-                    Destroy("Логин и пароль так и не пришел от клиента.");
+                    if (State.HasReceiveLoginAndPassword())
+                    {
+                        SystemInformation($"CURRENT_STATE:" + State.CurrentState);
+                        Destroy("Логин и пароль так и не пришел от клиента.");
+                    }
                 }
-            }, 
-            2000, Header.Events.SYSTEM);
+            },
+            5000, Header.Events.SYSTEM);
 
             LoggerInfo("Start");
         }
 
-        void Destruction() 
+        void Destruction()
         {
             LoggerInfo("Destruction");
+
+            lock (State.Locker)
+            {
+                State.Destroy();
+
+                if (State.HasBeginSubscribeToReceiveTcpConnection() ||
+                    State.HasSendingAccessVerificationAndRequestTcpConnect())
+                {
+                    LoggerInfo("Отписка от ожидаения Tcp подключения была запущена в Destrction().");
+
+                    I_unsubscribeToReceiveTcpConnection.To(Data.Ssl.Address);
+                }
+            }
         }
 
         void Stop()
         {
             LoggerInfo("Stop");
+
+            Data.Ssl.Stop();
         }
 
         void Destroyed()
         {
-            LoggerInfo("Destroyed");
+            LoggerInfo($"Destroyed. CurrentState:{State.CurrentState}.");
+
+            lock (State.Locker)
+            {
+                if (State.HasEndClientConnection())
+                {
+                    I_creatingConnectedClient.To(Data.Login, new ConnectedInformation()
+                    {
+                        BDIndex = Data.Index,
+
+                        Tcp = Data.Tcp,
+                    });
+                }
+                else
+                {
+                    if (State.HasUnsubscribeReqestTcpConnect())
+                        Data.Tcp.Stop();
+                }
+            }
         }
     }
 }

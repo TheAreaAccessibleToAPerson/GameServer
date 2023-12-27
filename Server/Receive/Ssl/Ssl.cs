@@ -125,7 +125,10 @@ namespace server.receive
                 SystemLogger("Start");
 
                 i_start.To();
+            }
 
+            void Configurate()
+            {
                 if (_sslListen.Start())
                 {
                     SystemLogger("Listen access.");

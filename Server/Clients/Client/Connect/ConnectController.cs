@@ -9,8 +9,6 @@ namespace server.client
     {
         private const string NAME = "ConnectController";
 
-        private const int _connectID = 155;
-
         protected IInput<int, string> I_clientLogger;
 
         protected IInput<connect.Data> I_verification;
@@ -28,87 +26,102 @@ namespace server.client
 
         protected void Process()
         {
-            if (State.IsDestroy()) return;
-
-            if (State.HasReceiveLoginAndPassword())
+            lock (State.Locker)
             {
-                if (State.SetVerification(out string info))
-                {
-                    LoggerInfo(info);
+                if (State.IsDestroy()) return;
 
-                    I_verification.To(Data);
-                }
-                else LoggerWarning(info);
-            }
-            else if (State.HasVerification())
-            {
-                if (Data.IsSuccessVerification())
+                if (State.HasReceiveLoginAndPassword())
                 {
-                    if (State.SetBeginSubscribeToReceiveTcpConnection(out string info))
+                    if (State.SetVerification(out string info))
                     {
                         LoggerInfo(info);
 
+                        I_verification.To(Data);
+                    }
+                    else LoggerWarning(info);
+                }
+                else if (State.HasVerification())
+                {
+                    if (Data.IsSuccessVerification())
+                    {
                         if (TryIncrementEvent())
                         {
-                            I_subscribeToReceiveTcpConnection.To
-                                (Data.Ssl.Address, this);
+                            if (State.SetBeginSubscribeToReceiveTcpConnection(out string info))
+                            {
+                                LoggerInfo(info);
+
+                                I_subscribeToReceiveTcpConnection.To
+                                    (Data.Ssl.Address, this);
+                            }
+                            else LoggerWarning(info);
                         }
                         else LoggerWarning
                             ("Неудалось начать подписку на прослушку Tcp соединения," +
                                 " обьект приступил к уничтожению.");
                     }
-                    else LoggerWarning(info);
                 }
-            }
-            else if (State.HasBeginSubscribeToReceiveTcpConnection())
-            {
-                if (State.SetSendingAccessVerificationAndRequestTcpConnection(out string info))
+                else if (State.HasBeginSubscribeToReceiveTcpConnection())
                 {
-                    LoggerInfo(info);
-
-                    invoke_event(() =>
+                    if (State.SetSendingAccessVerificationAndRequestTcpConnection(out string info))
                     {
-                        Data.Ssl.Send(new byte[NetWork.Server.AccessVerification.LENGTH]
+                        LoggerInfo(info);
+
+                        invoke_event(() =>
                         {
+                            Data.Ssl.Send(new byte[NetWork.Server.AccessVerification.LENGTH]
+                            {
                             NetWork.Server.AccessVerification.LENGTH >> 8,
                             NetWork.Server.AccessVerification.LENGTH,
 
+                            NetWork.Server.AccessVerification.TYPE >> 8,
                             NetWork.Server.AccessVerification.TYPE
-                        });
-                    },
-                    Header.Events.SSL_SEND);
+                            });
+                        },
+                        Header.Events.SSL_SEND);
 
-                    invoke_event(() => 
-                    {
-                        if (State.HasSendingAccessVerificationAndRequestTcpConnect())
-                            Destroy("Истекло время ожидания Tcp соединения.");
-                    }, 
-                    2000, Header.Events.SSL_SEND);
+                        invoke_event(() =>
+                        {
+                            if (State.HasSendingAccessVerificationAndRequestTcpConnect())
+                                Destroy("Истекло время ожидания Tcp соединения.");
+                        },
+                        2000, Header.Events.SYSTEM);
+                    }
+                    else LoggerWarning(info);
                 }
-                else LoggerWarning(info);
-            }
-            else if (State.HasSendingAccessVerificationAndRequestTcpConnect())
-            {
-                if (State.SetEndConnectionClient(out string info))
+                else if (State.HasSendingAccessVerificationAndRequestTcpConnect())
                 {
-                    LoggerInfo(info);
-
-                    I_creatingConnectedClient.To(Data.Login, new ConnectedInformation()
+                    if (TryIncrementEvent())
                     {
-                        ConnectedID = _connectID,
-                        BDIndex = Data.Index,
+                        if (State.SetUnsubscribeRequestTcpConnect(out string info))
+                        {
+                            LoggerInfo(info);
 
-                        Tcp = Data.Tcp,
-                        Ssl = Data.Ssl,
-                    });
+                            I_unsubscribeToReceiveTcpConnection.To(Data.Ssl.Address);
+                        }
+                        else LoggerWarning(info);
+                    }
+                    else LoggerWarning
+                        ("Неудалось начать отподписку прослушки Tcp соединения," +
+                            " обьект приступил к уничтожению.");
                 }
-                else LoggerWarning(info);
+                else if (State.HasUnsubscribeReqestTcpConnect())
+                {
+                    if (State.SetEndConnectionClinet(out string info))
+                    {
+                        LoggerInfo(info);
+
+                        destroy();
+                    }
+                    else Destroy(info);
+                }
+                else LoggerWarning(State.StepError());
             }
-            else LoggerWarning(State.StepError());
         }
 
         protected void Receive(byte[] message, int length)
         {
+            //SystemInformation($"PACKET - ArrayLength:{message.Length},  Lengt:{length}");
+
             int type = message[NetWork.TYPE_1BYTE_INDEX] << 8 ^
                 message[NetWork.TYPE_2BYTE_INDEX];
 
@@ -119,8 +132,14 @@ namespace server.client
                     string login = "";
                     {
                         for (int i = NetWork.Client.SendingLoginAndPassword.LOGIN_START_INDEX;
-                            i < NetWork.Client.SendingLoginAndPassword.LOGIN_LENGTH; i++)
-                        { login += Convert.ToChar(message[i]); }
+                            i < NetWork.Client.SendingLoginAndPassword.LOGIN_END_INDEX; i++)
+                        {
+                            char c = Convert.ToChar(message[i]);
+
+                            if (c == '\0') break;
+
+                            login += c;
+                        }
                     }
 
                     if (Data.SetLogin(login, out string loginError))
@@ -128,8 +147,14 @@ namespace server.client
                         string password = "";
                         {
                             for (int i = NetWork.Client.SendingLoginAndPassword.PASSWORD_START_INDEX;
-                                i < NetWork.Client.SendingLoginAndPassword.PASSWORD_LENGTH; i++)
-                            { password += Convert.ToChar(message[i]); }
+                                i < NetWork.Client.SendingLoginAndPassword.PASSWORD_END_INDEX; i++)
+                            {
+                                char c = Convert.ToChar(message[i]);
+
+                                if (c == '\0') break;
+
+                                password += c;
+                            }
                         }
 
                         if (Data.SetPassword(password, out string passwordError))
@@ -170,18 +195,20 @@ namespace server.client
                 I_clientLogger.To(Logger.WARNING, $"{NAME}:{GetKey()}[{info}]");
         }
 
-        void ITcpConnectionReceive.Send(Socket sock)
+        void ITcpConnectionReceive.Send(System.Net.Sockets.Socket sock)
         {
             if (Data.Tcp == null)
             {
-                Data.Tcp = sock;
+                Data.Tcp = new Socket(2048, Destroy, sock);
+
+                invoke_event(Process, Header.Events.SYSTEM);
             }
             else LoggerWarning("Повторно пришол tcp socket.");
         }
 
         public interface ITcpConnectionReceive
         {
-            void Send(Socket sock);
+            void Send(System.Net.Sockets.Socket sock);
             string GetKey();
         }
     }

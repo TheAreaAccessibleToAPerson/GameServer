@@ -20,28 +20,37 @@ namespace server.client.connect
         private const string SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION
             = "Sending access verification and request tcp connection.";
 
+        private const string UNSUBSCRIBE_TCP_CONNECT = "Unsubscribe Tcp connect.";
         private const string END_CONNECTION_CLIENT = "End connection client";
 
-        private string CurrentState = RECEIVE_LOGIN_AND_PASSWORD;
+        public string CurrentState { private set; get; } = RECEIVE_LOGIN_AND_PASSWORD;
 
         private const string CHANGING_INFO
-            = @"CurrentState:{0} \n ChangingTheState{1} - access.";
+            = @"CurrentState:{0} -> {1} - access.";
         private const string CHANGING_ERROR
-            = @"CurrentState:{0} \n ChangingTheState{1} - error.";
+            = @"CurrentState:{0} -> {1} - error.";
         private const string DESTROY_INFO
-            = @"CurrentState:{0} \n ChangingTheState{1} - destroy.";
+            = @"CurrentState:{0} -> {1} - destroy.";
+
+        public readonly object Locker = new object();
 
         private bool _isDestroy = false;
 
         public bool IsDestroy()
-        { lock (this) return _isDestroy; }
+        {
+            lock (Locker) return _isDestroy;
+        }
 
         public void Destroy()
-        { lock (this) _isDestroy = true; }
+        {
+            lock (Locker)
+            {
+                _isDestroy = true;
+            }
+        }
 
         public string StepError()
             => $"CurrentState:{CurrentState}. Вы пытаетесь выполнить лишний шаг.";
-
 
         public bool HasReceiveLoginAndPassword()
             => CurrentState == RECEIVE_LOGIN_AND_PASSWORD;
@@ -79,35 +88,32 @@ namespace server.client.connect
 
         public bool SetBeginSubscribeToReceiveTcpConnection(out string info)
         {
-            lock (this)
+            if (CurrentState == VERIFICATION)
             {
-                if (CurrentState == VERIFICATION)
-                {
-                    if (_isDestroy)
-                    {
-                        info = String.Format
-                            (DESTROY_INFO, VERIFICATION,
-                                BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION);
-
-                        return false;
-                    }
-
-                    CurrentState = BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION;
-
-                    info = String.Format
-                        (CHANGING_INFO, VERIFICATION,
-                            BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION);
-
-                    return true;
-                }
-                else
+                if (_isDestroy)
                 {
                     info = String.Format
-                        (CHANGING_ERROR, VERIFICATION,
+                        (DESTROY_INFO, VERIFICATION,
                             BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION);
 
                     return false;
                 }
+
+                CurrentState = BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION;
+
+                info = String.Format
+                    (CHANGING_INFO, VERIFICATION,
+                        BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION);
+
+                return true;
+            }
+            else
+            {
+                info = String.Format
+                    (CHANGING_ERROR, VERIFICATION,
+                        BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION);
+
+                return false;
             }
         }
 
@@ -116,7 +122,7 @@ namespace server.client.connect
 
         public bool SetSendingAccessVerificationAndRequestTcpConnection(out string info)
         {
-            lock (this)
+            //lock (Locker)
             {
                 if (CurrentState == BEGIN_SUBSCRIBE_TO_RECEIVE_TCP_CONNECTION)
                 {
@@ -151,16 +157,53 @@ namespace server.client.connect
         public bool HasSendingAccessVerificationAndRequestTcpConnect()
             => CurrentState == SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION;
 
-        public bool SetEndConnectionClient(out string info)
+        public bool SetUnsubscribeRequestTcpConnect(out string info)
         {
-            lock (this)
+            //lock (Locker)
             {
                 if (CurrentState == SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION)
                 {
                     if (_isDestroy)
                     {
                         info = String.Format
-                            (DESTROY_INFO, SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION, 
+                            (DESTROY_INFO, SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION,
+                                UNSUBSCRIBE_TCP_CONNECT);
+
+                        return false;
+                    }
+
+                    CurrentState = UNSUBSCRIBE_TCP_CONNECT;
+
+                    info = String.Format
+                        (DESTROY_INFO, SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION,
+                            UNSUBSCRIBE_TCP_CONNECT);
+
+                    return true;
+                }
+                else
+                {
+                    info = String.Format
+                        (DESTROY_INFO, SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION,
+                            UNSUBSCRIBE_TCP_CONNECT);
+
+                    return false;
+                }
+            }
+        }
+
+        public bool HasUnsubscribeReqestTcpConnect()
+            => CurrentState == UNSUBSCRIBE_TCP_CONNECT;
+
+        public bool SetEndConnectionClinet(out string info)
+        {
+            //lock (Locker)
+            {
+                if (CurrentState == UNSUBSCRIBE_TCP_CONNECT)
+                {
+                    if (_isDestroy)
+                    {
+                        info = String.Format
+                            (DESTROY_INFO, UNSUBSCRIBE_TCP_CONNECT,
                                 END_CONNECTION_CLIENT);
 
                         return false;
@@ -169,7 +212,7 @@ namespace server.client.connect
                     CurrentState = END_CONNECTION_CLIENT;
 
                     info = String.Format
-                        (DESTROY_INFO, SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION, 
+                        (DESTROY_INFO, UNSUBSCRIBE_TCP_CONNECT,
                             END_CONNECTION_CLIENT);
 
                     return true;
@@ -177,12 +220,15 @@ namespace server.client.connect
                 else
                 {
                     info = String.Format
-                        (DESTROY_INFO, SENDING_ACCESS_VERIFICATION_AND_REQUEST_TCP_CONNECTION, 
+                        (DESTROY_INFO, UNSUBSCRIBE_TCP_CONNECT,
                             END_CONNECTION_CLIENT);
 
                     return false;
                 }
             }
         }
+
+        public bool HasEndClientConnection()
+            => CurrentState == END_CONNECTION_CLIENT;
     }
 }

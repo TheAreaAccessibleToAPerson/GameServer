@@ -24,6 +24,11 @@ namespace server.receive
                 public const string SUBSCRIBE = NAME + ":Subscribe";
                 public const string UNSUBSCRIBE = NAME + ":Unsubscribe";
             }
+
+            public struct Message
+            {
+                public const string ADD = NAME + ":Add";
+            }
         }
 
         readonly Dictionary<string, client.ConnectController.ITcpConnectionReceive> _clients
@@ -31,11 +36,24 @@ namespace server.receive
 
         IInput<int, string> i_systemLogger;
 
-
         void Construction()
         {
             send_message<int, string>
                 (ref i_systemLogger, Logger.Type.SYSTEM);
+
+            listen_message<Socket>(BUS.Message.ADD)
+                .output_to((socket) =>
+                {
+                    string address = ((IPEndPoint)socket.RemoteEndPoint).Address.ToString();
+
+                    if (_clients.TryGetValue(address,
+                        out client.ConnectController.ITcpConnectionReceive receive))
+                    {
+                        receive.Send(socket);
+                    }
+                    else SystemLoggerInfo($"Tcp соединение из адрресса не ожидается.");
+                },
+                Header.Events.RECEIVE_NEW_CONNECT);
 
             listen_echo_2_1<string, client.ConnectController.ITcpConnectionReceive, bool>
                 (BUS.Echo.SUBSCRIBE)
@@ -148,12 +166,12 @@ namespace server.receive
                 i_systemLogger.To(Logger.ERROR, $"{NAME}:{info}");
         }
 
-        void Destroyed() 
+        void Destroyed()
         {
             if (_clients.Count > 0)
             {
                 string clientKeyList = ""; int index = 0;
-                foreach(var client in _clients.Values)
+                foreach (var client in _clients.Values)
                     clientKeyList += $"\n{index}){client.GetKey()}.";
 
                 SystemLoggerError($"Отписались клиенты:{clientKeyList}");
@@ -177,8 +195,7 @@ namespace server.receive
                 send_message<int, string>(ref i_systemLogger,
                     Logger.Type.SYSTEM);
 
-                send_message(ref _tcpListen.I_sendNewClient,
-                    ClientsManager.BUS.Message.LISTEN_CONNECT_CLIENTS);
+                send_message(ref _tcpListen.I_sendNewClient, TcpShell.BUS.Message.ADD);
 
                 send_impuls(ref i_start, TcpShell.BUS.Impuls.START);
                 send_impuls(ref i_restart, TcpShell.BUS.Impuls.RESTART);
@@ -197,8 +214,13 @@ namespace server.receive
             {
                 SystemLoggerInfo("Start");
 
-                i_start.To();
+                _tcpListen.Start();
 
+                i_start.To();
+            }
+
+            void Configurate()
+            {
                 if (_tcpListen.Start())
                 {
                     SystemLoggerInfo("Listen access.");

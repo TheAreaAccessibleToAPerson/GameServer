@@ -1,6 +1,6 @@
 public struct NetWork 
 {
-    public const int HEADER_LENGTH = 2;
+    public const int HEADER_LENGTH = 4;
 
     public const int LENGTH_1BYTE_INDEX = 0;
     public const int LENGTH_2BYTE_INDEX = 1;
@@ -15,7 +15,7 @@ public struct NetWork
         public struct AccessVerification
         {
             public const int TYPE = NetWork.Server.ACCESS_VERIFICATION;
-            public const int LENGTH = NetWork.HEADER_LENGTH + 1;
+            public const int LENGTH = NetWork.HEADER_LENGTH;
         }
     }
 
@@ -28,12 +28,13 @@ public struct NetWork
             public const int TYPE = NetWork.Client.SENDING_LOGIN_AND_PASSWORD;
             public const int LENGTH = NetWork.HEADER_LENGTH + LOGIN_LENGTH + PASSWORD_LENGTH;
 
-
             public const int LOGIN_START_INDEX = NetWork.HEADER_LENGTH;
             public const int LOGIN_LENGTH = 16;
+            public const int LOGIN_END_INDEX = LOGIN_START_INDEX + LOGIN_LENGTH;
 
             public const int PASSWORD_START_INDEX = LOGIN_START_INDEX + LOGIN_LENGTH;
             public const int PASSWORD_LENGTH = 16;
+            public const int PASSWORD_END_INDEX = PASSWORD_START_INDEX + PASSWORD_LENGTH;
         }
     }
 }

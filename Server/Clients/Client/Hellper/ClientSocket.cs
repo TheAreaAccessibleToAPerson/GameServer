@@ -34,6 +34,8 @@ namespace server.client
 
         public new void Send(byte[] buffer)
         {
+            if (_isRunning == false) return;
+
             try 
             {
                 base.Send(buffer);
@@ -69,7 +71,8 @@ namespace server.client
                             int length = buffer[step + NetWork.LENGTH_1BYTE_INDEX] << 8 ^    
                                 buffer[step + NetWork.LENGTH_2BYTE_INDEX];
 
-                            if (length < (size - step))
+
+                            if (length <= (size - step))
                             {
                                 byte[] message = new byte[length];
 
@@ -93,6 +96,11 @@ namespace server.client
 
                 Destroy(ex.ToString());
             }
+        }
+
+        public void Pause()
+        {
+            _isRunning = false;
         }
 
         public bool Stop()

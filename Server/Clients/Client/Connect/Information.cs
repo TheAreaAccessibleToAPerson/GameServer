@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using Butterfly;
 
 namespace server.client.connect
@@ -10,12 +11,12 @@ namespace server.client.connect
 
         public enum Verification
         {
-            None,
+            None = 0,
             // Авторизация прошла успешно.
-            Success,
+            Success = 8,
         }
 
-        private const string NAME = "Information.Client:";
+        private const string ERROR = "Error";
 
         private Verification _verificationResult = Verification.None;
 
@@ -43,7 +44,7 @@ namespace server.client.connect
         private readonly int _loginMinLength;
         private readonly int _loginMaxLength;
 
-        private string _password = "";
+        public string Password { private set; get; } = "";
         private readonly int _passwordMinLength;
         private readonly int _passwordMaxLength;
 
@@ -56,10 +57,11 @@ namespace server.client.connect
 
         public bool SetLogin(string login, out string error)
         {
-            error = NAME;
+            error = ERROR;
 
             if (Login != "")
                 error += $"Вы попытались повторно назначить в поле login значение {login}.";
+
 
             if (login.Length < _loginMinLength)
                 error += $"Минимально допустимая длина значение поля login {_loginMinLength}, " +
@@ -69,7 +71,7 @@ namespace server.client.connect
                 error += $"Максимально допустимая длина значение поля login {_loginMaxLength}, " +
                     $"переданный параметр [{login}] имеет длину {login.Length}";
 
-            if (error == NAME)
+            if (error == ERROR)
             {
                 Login = login;
 
@@ -80,22 +82,22 @@ namespace server.client.connect
 
         public bool SetPassword(string password, out string error)
         {
-            error = NAME;
+            error = ERROR;
 
-            if (_password != "")
+            if (Password != "")
                 error += $"Вы попытались повторно назначить в поле password значение {password}.";
 
-            if (password.Length < _loginMinLength)
+            if (password.Length < _passwordMinLength)
                 error += $"Минимально допустимая длина значение поля password {_passwordMinLength}, " +
                     $"переданный параметр [{password}] имеет длину {password.Length}";
 
-            if (password.Length > _loginMaxLength)
+            if (password.Length > _passwordMaxLength)
                 error += $"Максимально допустимая длина значение поля password {_passwordMaxLength}, " +
                     $"переданный параметр [{password}] имеет длину {password.Length}";
 
-            if (error == NAME)
+            if (error == ERROR)
             {
-                _password = password;
+                Password = password;
 
                 return true;
             }
