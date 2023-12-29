@@ -13,14 +13,17 @@
                 EventsSetting = new EventSetting[]
                 {
                     new EventSetting(server.Header.Events.RECEIVE_NEW_CONNECT, 30),
-                    new EventSetting(server.Header.Events.BD_AUTHORIZATION, 30),
-                    new EventSetting(server.Header.Events.BD_LOAD_CLIENT_DATA, 30),
                     new EventSetting(server.Header.Events.TCP_RECEIVE, 30),
                     new EventSetting(server.Header.Events.TCP_SEND, 30),
                     new EventSetting(server.Header.Events.SSL_RECEIVE, 30),
                     new EventSetting(server.Header.Events.SSL_SEND, 30),
                     new EventSetting(server.Header.Events.WORLD, 30),
+                    new EventSetting(server.Header.Events.CLIENT, 30),
                     new EventSetting(server.Header.Events.WORK, 30),
+
+                    // ________________________BD______________________________
+                    new EventSetting(server.Header.Events.BD_AUTHORIZATION, 30),
+                    // ________________________________________________________
                 }
             });
         }

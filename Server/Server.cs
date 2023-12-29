@@ -19,7 +19,7 @@ namespace server
             obj<receive.TcpShell>(receive.TcpShell.NAME, Field.TcpSetting);
 
             obj<BD.AuthorizationShell>(BD.AuthorizationShell.NAME, Field.BDSetting);
-            obj<BD.LoadClientData>(BD.LoadClientData.NAME, Field.BDSetting);
+            obj<BD.Room>(BD.Room.NAME, Field.BDSetting);
         }
 
         void Start() => SystemLogger("Start");

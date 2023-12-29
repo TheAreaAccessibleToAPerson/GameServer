@@ -120,8 +120,6 @@ namespace server.client
 
         protected void Receive(byte[] message, int length)
         {
-            //SystemInformation($"PACKET - ArrayLength:{message.Length},  Lengt:{length}");
-
             int type = message[NetWork.TYPE_1BYTE_INDEX] << 8 ^
                 message[NetWork.TYPE_2BYTE_INDEX];
 

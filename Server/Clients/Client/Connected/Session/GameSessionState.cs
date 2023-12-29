@@ -1,114 +1,56 @@
+using System.Net.Http.Headers;
+
 namespace server.client.gameSession
 {
     public sealed class State
     {
-        private const string NONE = "None";
+        /// <summary>
+        /// Загружаем данные.
+        /// </summary>
+        public const string LOADING_DATA = "Loading data";
 
         /// <summary>
-        /// Загружаем данные из базы данных.
+        /// Данные загружены.
         /// </summary>
-        private const string LOAD_BD_DATA = "Load db data";
-
-        private const string ADD_TO_WORLD = "Add to world";
-
-        private const string CHANGE_ERROR =
-            @"Неудалось сменить состояние c CurrentState:{0} на NextState:{1}." +
-            @"Ожидалось что текущее состояние должно быть {2}.";
-
-        private const string DESTROY_INFO =
-            @"Failed to change state {0}->{1}";
-
-        private const string CHANGE_INFO =
-            @"Сменяем CurrentState:{0} на NextState:{1}.";
+        public const string UPLOADING_DATA = "Loading data";
 
         /// <summary>
-        /// Текущее состяние игровой сессии.
+        /// Входим в мир.
         /// </summary>
-        public string CurrentState = NONE;
-
-        public readonly object Locker = new object();
-
-        public bool IsDestroy { set; get; } = false;
-
-        public string Destroy()
-        {
-            lock (Locker)
-            {
-                IsDestroy = true;
-
-                return $"Destroying. CurrentState:{CurrentState}";
-            }
-        }
-
-        public bool HasNone()
-        {
-            lock (Locker)
-            {
-                return CurrentState == NONE;
-            }
-        }
+        public const string INPUT_TO_WORLD = "Input to world";
 
         /// <summary>
-        /// Загружаем данные из базы данных.
+        /// Необходимое количесво данных.
         /// </summary>
-        /// <param name="info"></param>
+        private int DATA_COUNT = 1;
+
+        public string CurrentState { private set; get; } = LOADING_DATA;
+
+        /// <summary>
+        /// Количесво загруженых данных.
+        /// </summary>
+        private int _uploadedData = 0;
+
+        /// <summary>
+        /// Проверяем загрузились ли все данные.
+        /// </summary>
         /// <returns></returns>
-        public bool SetLoadDbData(out string info)
+        public bool IsUploadedData()
         {
-            lock (Locker)
-            {
-                if (CurrentState == NONE)
-                {
-                    info = String.Format(CHANGE_INFO,
-                        CurrentState, LOAD_BD_DATA);
+            _uploadedData++;
 
-                    return true;
-                }
-                else
-                {
-                    info = String.Format(CHANGE_ERROR,
-                        CurrentState, LOAD_BD_DATA);
+            if (_uploadedData == DATA_COUNT) return true;
 
-                    return false;
-                }
-            }
+            return false;
         }
 
-        public bool HasLoadDBData()
-        {
-            lock(Locker)
-            {
-                return CurrentState == LOAD_BD_DATA;
-            }
-        }
+        /// <summary>
+        /// Сбрасываем счетчик загруженых данных.
+        /// </summary>
+        public void Reset() => _uploadedData = 0;
 
-        public bool SetAddToWorld(out string info)
-        {
-            lock (Locker)
-            {
-                if (CurrentState == LOAD_BD_DATA)
-                {
-                    info = String.Format(CHANGE_INFO,
-                        CurrentState, ADD_TO_WORLD);
+        public bool HasLoadingData() => CurrentState == LOADING_DATA;
 
-                    return true;
-                }
-                else
-                {
-                    info = String.Format(CHANGE_ERROR,
-                        CurrentState, ADD_TO_WORLD);
-
-                    return false;
-                }
-            }
-        }
-
-        public bool HasAddToWorld()
-        {
-            lock(Locker)
-            {
-                return CurrentState == ADD_TO_WORLD;
-            }
-        }
+        //public bool SetLoadingData()
     }
 }

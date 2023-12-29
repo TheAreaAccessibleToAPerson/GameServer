@@ -8,10 +8,16 @@ namespace server.client.gameSession
         private const string NAME = "GameSession";
 
         protected Data Data = new();
+        protected IInput I_process;
 
         private readonly State _state = new();
 
         protected IInput<int, string> I_clientLogger;
+
+        /// <summary>
+        /// Загружаем данные клиента.
+        /// </summary>
+        protected IInput<Data> I_DBLoadData;
 
         protected IInput<Connected.IWorldReceive> I_addToWorld;
         protected IInput<string> I_removeFromWorld;
@@ -20,7 +26,12 @@ namespace server.client.gameSession
         {
         }
 
-        protected void ReceiveSsl(byte[] message, int length)
+        /// <summary>
+        /// Прослушивает ответы из таблицы хранящей данные о
+        /// текущей комнате.
+        /// </summary>
+        /// <param name="result"></param>
+        protected void BDReceiveRoom(string result)
         {
         }
 
@@ -46,42 +57,6 @@ namespace server.client.gameSession
         {
             lock (_state.Locker)
             {
-                if (_state.IsDestroy)
-                {
-                    LoggerWarning("Невозможно продолжить процесс смены состояния." +
-                        $"CurrentState:{_state.CurrentState}.");
-
-                    return;
-                }
-
-                if (_state.HasNone())
-                {
-                    // Получаем данные из базы данных.
-                    if (_state.SetLoadDbData(out string info))
-                    {
-                        LoggerInfo(info);
-
-                        //ClientsManager.DBLoadClientData(Data);
-
-                        invoke_event(() => 
-                        {
-                            if (_state.HasNone()) 
-                                Destroy($"CurrentState:{_state.CurrentState}.Не были получены данные из BD.");
-                        },
-                        2000, Header.Events.SYSTEM);
-                    }
-                    else LoggerError(info);
-                }
-                else if (_state.HasLoadDBData()) 
-                {
-                    if (_state.SetAddToWorld(out string info))
-                    {
-                        LoggerInfo(info);
-
-                        I_addToWorld.To(this);
-                    }
-                    else LoggerError(info);
-                }
             }
         }
 

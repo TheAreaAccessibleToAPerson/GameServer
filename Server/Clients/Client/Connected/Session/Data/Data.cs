@@ -1,7 +1,13 @@
+using System.Collections.Concurrent;
+using Butterfly;
+
 namespace server.client.gameSession
 {
     public sealed class Data
     {
+        public IInput<string> I_BDReceievRoom;
+        public ConcurrentQueue<string> DBRoom = new();
+
         /// <summary>
         /// Результат полученый из базы данных.
         /// </summary>
@@ -10,12 +16,6 @@ namespace server.client.gameSession
 
         public Butterfly.IInput Process;
 
-        public void SetDBResult(string result)
-        {
-            DBResult = result;
-
-            Process.To();
-        }
 
         /// <summary>
         /// Максимальное количесво персонажей на аккаунте.

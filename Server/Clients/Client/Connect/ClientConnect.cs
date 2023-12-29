@@ -80,12 +80,11 @@ namespace server.client
                 {
                     if (State.HasReceiveLoginAndPassword())
                     {
-                        SystemInformation($"CURRENT_STATE:" + State.CurrentState);
                         Destroy("Логин и пароль так и не пришел от клиента.");
                     }
                 }
             },
-            5000, Header.Events.SYSTEM);
+            2000, Header.Events.SYSTEM);
 
             LoggerInfo("Start");
         }

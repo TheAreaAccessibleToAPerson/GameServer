@@ -19,7 +19,7 @@ namespace server.client
         private static IInput<Connected.IWorldReceive> y;
         private short index = 0;
 
-        void Contruction()
+        void Construction()
         {
             send_message(ref I_worldLogger, Logger.Type.WORLD);
 
