@@ -13,18 +13,9 @@ namespace server
             public const string RECEIVE_NEW_CONNECT = "ReceiveNewConnect";
 
             public const string BD_AUTHORIZATION = "BD";
-            public const string BD_ROOM = "BD";
+            public const string DB_DATA = "BD";
             public const string BD_EQUIPMENT = "BD";
             public const string BD_INVENTORY = "BD";
-            public const string BD_CLAN = "BD";
-            public const string BD_SKILLS = "BD";
-            public const string BD_KD_SKILLS = "BD";
-            public const string BD_BUFF = "BD";
-            public const string BD_DEBUFF = "BD";
-            public const string BD_EX = "BD";
-            public const string BD_HP = "BD";
-            public const string BD_MP = "BD";
-            public const string BD_SHIELD = "BD";
 
             public const string TCP_RECEIVE = "TcpReceive";
             public const string TCP_SEND = "TcpSend";
@@ -48,7 +39,7 @@ namespace server
             listen_events(Events.RECEIVE_NEW_CONNECT, Events.RECEIVE_NEW_CONNECT);
             listen_events(Events.TCP_SEND, Events.TCP_SEND);
             listen_events(Events.SSL_SEND, Events.SSL_SEND);
-            listen_events(Events.WORLD, Events.WORLD);
+            //listen_events(Events.WORLD, Events.WORLD);
             listen_events(Events.CLIENT, Events.CLIENT);
             listen_events(Events.WORK, Events.WORK);
 

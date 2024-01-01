@@ -2,7 +2,7 @@ using Butterfly;
 
 namespace server.BD
 {
-    public sealed class Room : Controller.LocalField<Setting.BD>
+    public sealed class ClientData : Controller.LocalField<Setting.BD>
     {
         public const string NAME = "Room";
 
@@ -10,21 +10,21 @@ namespace server.BD
         {
             public struct Message
             {
-                public const string GetRoom = NAME + ":GetRoom"; 
-                public const string SetRoom = NAME + ":SetRoom"; 
+                public const string GetData = NAME + ":GetData"; 
+                public const string SetData = NAME + ":SetData"; 
             }
         }
 
         void Construction()
         {
-            extract_values<client.gameSession.Data>
-            (BUS.Message.SetRoom, (clientData) =>
+            extract_values<client.gameSession.BDData>
+            (BUS.Message.SetData, (clientData) =>
             {
                 // ... 
             });
 
-            extract_values<client.gameSession.Data>
-            (BUS.Message.GetRoom, (clientData) =>
+            extract_values<client.gameSession.BDData>
+            (BUS.Message.GetData, (clientData) =>
             {
                 // ... 
             });
@@ -36,10 +36,14 @@ namespace server.BD
         {
             void Construction()
             {
-                safe_listen_message<client.gameSession.Data>(BUS.Message.SetRoom,
-                    Header.Events.BD_ROOM, Room.NAME)
+                safe_listen_message<client.gameSession.BDData>(BUS.Message.SetData,
+                    Header.Events.DB_DATA, ClientData.NAME)
                         .output_to((clientData, confirm) =>
                         {
+                            SystemInformation("set data.");
+                            clientData.I_BDReceiveData.To("");
+                            confirm.Invoke();
+                            /*
                             if (clientData.DBRoom.TryDequeue(out string str))
                             {
                                 string result = "RESULT";
@@ -47,12 +51,17 @@ namespace server.BD
 
                                 confirm.Invoke();
                             }
+                            */
                         });
 
-                safe_listen_message<client.gameSession.Data>(BUS.Message.GetRoom,
-                    Header.Events.BD_ROOM, Room.NAME)
+                safe_listen_message<client.gameSession.BDData>(BUS.Message.GetData,
+                    Header.Events.DB_DATA, ClientData.NAME)
                         .output_to((clientData, confirm) =>
                         {
+                            SystemInformation("set data.");
+                            clientData.I_BDReceiveData.To("");
+                            confirm.Invoke();
+                            /*
                             if (clientData.DBRoom.TryDequeue(out string str))
                             {
                                 string result = "RESULT";
@@ -60,6 +69,7 @@ namespace server.BD
 
                                 confirm.Invoke();
                             }
+                            */
                         });
             }
         }

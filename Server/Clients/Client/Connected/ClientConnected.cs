@@ -4,40 +4,30 @@ namespace server.client
     {
         void Construction()
         {
+            BDData.Index = Field.BDIndex;
+
+            input_to(ref I_sendToClient, Field.Tcp.Send);
+
             send_message(ref I_clientLogger, Logger.Type.CLIENT);
 
             input_to(ref I_process, Header.Events.SYSTEM, Process);
 
+            input_to(ref BDData.I_BDReceiveData, Header.Events.SYSTEM, BDReceiveData);
 
-            input_to(ref Data.I_BDReceievRoom, Header.Events.SYSTEM, BDReceiveRoom);
-
-            safe_send_message(ref I_DBLoadData, BD.Room.BUS.Message.GetRoom);
+            safe_send_message(ref I_DBLoadData, BD.ClientData.BUS.Message.GetData);
 
             Field.Tcp.Destroy = Destroy;
-            Data.Process = I_process;
 
             input_to(ref Field.Tcp.I_output, Header.Events.WORK, ReceiveTcp);
 
             add_event(Header.Events.TCP_RECEIVE, Field.Tcp.Receive);
 
-            send_echo_1_2<Connected.IWorldReceive, bool, World.IClientReceive>
-                (ref I_addToWorld, World.BUS.Echo.ADD)
-                    .output_to((result, worldReseive) =>
+            send_echo_2_1<world.room.Setting, Connected.IWorldReceive, world.room.Controller.IReceive>
+                (ref I_addToWorld, World.BUS.Echo.CREATING)
+                    .output_to((worldReceive) =>
                     {
-                        if (result)
-                        {
-                            LoggerInfo($"Клиент был успешно добавлен в мир.");
-
-                            Process();
-                        }
-                        else 
-                        {
-                            LoggerError($"Неудалось добавить клинта в мир.");
-
-                            destroy();
-                        }
-                    },
-                    Header.Events.SYSTEM);
+                        LoggerInfo($"Комната успешно создана.");
+                    });
 
             send_echo_1_1<string, bool>(ref I_removeFromWorld, World.BUS.Echo.REMOVE)
                 .output_to((result) => 
@@ -48,8 +38,7 @@ namespace server.client
                     else 
                     {
                     }
-                },
-                Header.Events.SYSTEM);
+                });
         }
 
         void Start() 
@@ -61,9 +50,32 @@ namespace server.client
             I_process.To();
         }
 
+        public interface IRoomReceive 
+        {
+            /// <summary>
+            /// Комната создана.
+            /// </summary>
+            public void Creating(string roomName);
+        }
+
         public interface IWorldReceive
         {
+            /// <summary>
+            /// Ник нейм клинта.
+            /// </summary>
+            /// <returns></returns>
             public string GetNickname();
+
+            /// <summary>
+            /// Получаем имя комнаты в которой находится клиент.
+            /// </summary>
+            /// <returns></returns>
+            public string GetRoomName();
+
+            /// <summary>
+            /// Уникальный ключ клинта.
+            /// </summary>
+            /// <returns></returns>
             public string GetKey();
         }
     }

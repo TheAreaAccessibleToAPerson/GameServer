@@ -1,54 +1,55 @@
+using System.Data;
 using Butterfly;
+using server.client.world;
 
 namespace server.client
 {
-    public sealed class World : world.Controller 
+    public sealed class World : world.Controller
     {
 
-        public struct BUS 
+        public struct BUS
         {
-            public struct Echo 
+            public struct Echo
             {
-                public const string ADD = NAME + ":Add";
+                public const string CREATING = NAME + ":Creating";
+
+                public const string CONNECT = NAME + ":Connect";
+                public const string DISCONNECT = NAME + ":Disconnect";
+
                 public const string REMOVE = NAME + ":Remove";
             }
         }
-
-        private readonly Dictionary<int, Connected.IWorldReceive> m = new();
-
-        private static IInput<Connected.IWorldReceive> y;
-        private short index = 0;
 
         void Construction()
         {
             send_message(ref I_worldLogger, Logger.Type.WORLD);
 
-            listen_echo_1_2<Connected.IWorldReceive, bool, IClientReceive>(BUS.Echo.ADD)
-                .output_to((client, @return) => 
-                {
-                    if (Add(client))
+            listen_echo_2_1<world.room.Setting, Connected.IWorldReceive, world.room.Controller.IReceive>
+                (BUS.Echo.CREATING)
+                    .output_to((settings, client, @return) =>
                     {
-                        @return.To(true, this);
-                    }
-                    else @return.To(false, null);
-                },
-                Header.Events.WORLD);
+                        @return.To(Creating(GetUniqueID(), settings, client));
+                    },
+                    Header.Events.SYSTEM);
 
             listen_echo_1_1<string, bool>(BUS.Echo.REMOVE)
-                .output_to((name, @return) => 
-                { 
-                    @return.To(Remove(name)); 
+                .output_to((key, @return) =>
+                {
+                    @return.To(Remove(key));
                 },
-                Header.Events.WORLD);
+                Header.Events.SYSTEM);
         }
 
-        public static void Add1(Connected.IWorldReceive client)
-        {
-            y.To(client);
-        }
+        /// <summary>
+        /// Уникальный ID для комнаты.
+        /// </summary>
+        private ulong _uniqueID = 0;
 
-        public interface IClientReceive
+        public string GetUniqueID()
         {
+            if (_uniqueID == ulong.MaxValue) _uniqueID = 0;
+
+            return _uniqueID++.ToString();
         }
     }
 }

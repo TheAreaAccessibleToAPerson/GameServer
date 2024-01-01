@@ -1,47 +1,44 @@
+using System.Net.Http.Headers;
 using Butterfly;
 
 namespace server.client.world 
 {
-    public abstract class Controller : Butterfly.Controller,
-        World.IClientReceive
+    public abstract class Controller : Butterfly.Controller
     {
         public const string NAME = "World";
 
         protected IInput<int, string> I_worldLogger;
 
-        private readonly Dictionary<string, Connected.IWorldReceive> _clients = new();
+        private readonly Dictionary<string, room.Controller.IReceive> _rooms = new();
 
-        public bool Add(Connected.IWorldReceive client)
+        public room.Controller.IReceive Creating(string key, room.Setting settings, 
+            Connected.IWorldReceive client)
         {
-            string name = client.GetNickname();
-
-            if (_clients.ContainsKey(name))
+            if (_rooms.ContainsKey(key))
             {
-                LoggerError($"Клиент с именем {name} уже сущесвует и не может быть добавлен.");
+                LoggerError($"Конмната с ключом {key} уже сущесвует.");
 
-                return false;
+                return null;
             }
             else
             {
-                LoggerInfo($"Добавлен новый клиент {name}.");
+                room.Controller.IReceive room = obj<Room>(key, settings);
 
-                _clients.Add(name, client);
+                _rooms.Add(key, room);
 
-                return true;
+                return room;
             }
         }
 
-        public bool Remove(string name)
+        public bool Remove(string key)
         {
-            if (_clients.Remove(name))
+            if (_rooms.Remove(key))
             {
-                LoggerInfo($"Клиент с именем {name} был удален.");
-
                 return true;
             }
             else 
             {
-                LoggerError($"Клиента с именем {name} не сущесвует и он не может быть удален.");
+                LoggerError($"Неудалось удалить комнату {key}, так как ее не сущесувет.");
 
                 return false;
             }
@@ -49,9 +46,6 @@ namespace server.client.world
 
         void Check()
         {
-            if (_clients.Count > 0)
-            {
-            }
         }
 
         protected void LoggerInfo(string info)
@@ -71,5 +65,6 @@ namespace server.client.world
             if (StateInformation.IsCallConstruction)
                 I_worldLogger.To(Logger.WARNING, $"{NAME}:{GetKey()}[{info}]");
         }
+
     }
 }
