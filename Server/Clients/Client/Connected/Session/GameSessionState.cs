@@ -25,7 +25,7 @@ namespace server.client.gameSession
         /// <summary>
         /// Комната создана.
         /// </summary>
-        public const string CREATING_ROOM = "Creating room";
+        public const string CREATE_ROOM = "Creating room";
 
         /// <summary>
         /// Необходимое количесво данных.
@@ -149,30 +149,30 @@ namespace server.client.gameSession
             }
         }
 
-        public bool HasCreatingRoom() => CurrentState == CREATING_ROOM;
+        public bool HasCreateRoom() => CurrentState == CREATE_ROOM;
 
-        public bool SetCreatingRoom(out string info)
+        public bool SetCreateRoom(out string info)
         {
             lock (Locker)
             {
                 if (_isDestroy)
                 {
-                    info = $"Not call[Destroy]. CurrentState:{CurrentState} -> {CREATING_ROOM}.";
+                    info = $"Not call[Destroy]. CurrentState:{CurrentState} -> {CREATE_ROOM}.";
 
                     return false;
                 }
 
                 if (CurrentState == INPUT_TO_WORLD)
                 {
-                    info = $"Change state:access - CurrentState:{CurrentState} -> {CREATING_ROOM}.";
+                    info = $"Change state:access - CurrentState:{CurrentState} -> {CREATE_ROOM}.";
 
-                    CurrentState = CREATING_ROOM;
+                    CurrentState = CREATE_ROOM;
 
                     return true;
                 }
                 else 
                 {
-                    info = $"Change state:error - CurrentState:{CurrentState} -> {CREATING_ROOM}.";
+                    info = $"Change state:error - CurrentState:{CurrentState} -> {CREATE_ROOM}.";
 
                     return false;
                 }

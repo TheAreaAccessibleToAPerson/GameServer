@@ -1,3 +1,5 @@
+using Butterfly;
+
 namespace server.client
 {
     public class Connected : gameSession.Controller
@@ -6,7 +8,8 @@ namespace server.client
         {
             BDData.Index = Field.BDIndex;
 
-            input_to(ref I_sendToClient, Field.Tcp.Send);
+            input_to(ref I_sendMessageToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
+            input_to(ref I_sendMessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
 
             send_message(ref I_clientLogger, Logger.Type.CLIENT);
 
@@ -22,26 +25,69 @@ namespace server.client
 
             add_event(Header.Events.TCP_RECEIVE, Field.Tcp.Receive);
 
-            send_echo_2_1<world.room.Setting, Connected.IWorldReceive, world.room.Controller.IReceive>
+            send_echo_1_1<world.room.Setting, world.room.Controller.IReceive>
                 (ref I_addToWorld, World.BUS.Echo.CREATING)
-                    .output_to((worldReceive) =>
+                    .output_to((roomReceive) =>
                     {
                         LoggerInfo($"Комната успешно создана.");
                     });
 
             send_echo_1_1<string, bool>(ref I_removeFromWorld, World.BUS.Echo.REMOVE)
-                .output_to((result) => 
+                .output_to((result) =>
                 {
                     if (result)
                     {
                     }
-                    else 
+                    else
                     {
+                    }
+                });
+
+            input_to(ref IRoom_creating, Header.Events.CLIENT, (roomName, positionX, positionY) =>
+            {
+                lock (State.Locker)
+                {
+                    if (State.HasInputToWorld())
+                    {
+                        if (State.SetCreateRoom(out string info))
+                        {
+                            LoggerInfo($"Room receive:{roomName} creating.");
+
+                            I_sendMessagesToClient.To(new byte[][]
+                            {
+                                GetCreatingCharacterMessage(),
+                                GetCreatingRoomMessage(),
+                                GetNextCharacterPositionMessage(positionX, positionY),
+                            });
+                        }
+                        else LoggerError(info);
+                    }
+                    else LoggerWarning("В момент получения сообщения о создании" +
+                        "комнаты обьект начал процесс уничтожения.");
+                }
+            });
+
+            input_to(ref IRoom_characterMove, Header.Events.CLIENT, (direction, positionX, positionY,
+                dateTime, trevalTimeMill) =>
+                {
+                    lock (State.Locker)
+                    {
+                        if (State.HasCreateRoom())
+                        {
+                            LoggerInfo($"Character move:Direction[{direction}], PositionX[{positionX}], " + 
+                                $"PositionY[{positionY}], DateTime[{dateTime}], TrevalTimeMill[{trevalTimeMill}].");
+
+                            I_sendMessageToClient.To(GetMoveCharacterPositionMessage
+                                (direction, positionX, positionY, dateTime, trevalTimeMill));
+                        }
+                        else LoggerWarning("Пришло сообщение из комнаты в момент когда состояния клента: " + 
+                            $"{State.CurrentState}.");
                     }
                 });
         }
 
-        void Start() 
+
+        void Start()
         {
             LoggerInfo("Start");
 
@@ -50,33 +96,9 @@ namespace server.client
             I_process.To();
         }
 
-        public interface IRoomReceive 
+        public interface IClient
         {
-            /// <summary>
-            /// Комната создана.
-            /// </summary>
-            public void Creating(string roomName);
-        }
-
-        public interface IWorldReceive
-        {
-            /// <summary>
-            /// Ник нейм клинта.
-            /// </summary>
-            /// <returns></returns>
             public string GetNickname();
-
-            /// <summary>
-            /// Получаем имя комнаты в которой находится клиент.
-            /// </summary>
-            /// <returns></returns>
-            public string GetRoomName();
-
-            /// <summary>
-            /// Уникальный ключ клинта.
-            /// </summary>
-            /// <returns></returns>
-            public string GetKey();
         }
     }
 }

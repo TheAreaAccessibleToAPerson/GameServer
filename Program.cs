@@ -17,7 +17,7 @@
                     new EventSetting(server.Header.Events.TCP_SEND, 30),
                     new EventSetting(server.Header.Events.SSL_RECEIVE, 30),
                     new EventSetting(server.Header.Events.SSL_SEND, 30),
-                    //new EventSetting(server.Header.Events.WORLD, 30),
+                    new EventSetting(server.Header.Events.ROOM, 30),
                     new EventSetting(server.Header.Events.CLIENT, 30),
                     new EventSetting(server.Header.Events.WORK, 30),
 

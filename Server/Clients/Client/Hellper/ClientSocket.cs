@@ -31,6 +31,26 @@ namespace server.client
 
             return true;
         }
+        public new void Send(byte[][] buffers)
+        {
+            if (_isRunning == false) return;
+
+            try 
+            {
+                byte[] newBuffer = buffers[0];
+
+                for (int i = 1; i < buffers.Length; i++)
+                   newBuffer = newBuffer.Concat(buffers[i]).ToArray();
+
+                base.Send(newBuffer);
+            }
+            catch (Exception ex)
+            {
+                _isRunning = false;
+
+                Destroy(ex.ToString());
+            }
+        }
 
         public new void Send(byte[] buffer)
         {

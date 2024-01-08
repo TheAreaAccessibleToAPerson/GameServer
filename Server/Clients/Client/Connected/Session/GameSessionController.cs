@@ -2,39 +2,42 @@ using Butterfly;
 
 namespace server.client.gameSession
 {
-    public abstract class Main : Butterfly.Controller.Board.LocalField<client.ConnectedInformation>
-    {
-        protected IInput<byte[]> I_sendToClient;
-
-        protected void SendCreatingRoom(string roomName)
-        {
-            I_sendToClient.To(new byte[]
-            {
-            });
-        }
-    }
-
-    public abstract class Controller : Main, Connected.IWorldReceive, Connected.IRoomReceive
+    public abstract class Controller : Main
     {
         private const string NAME = "GameSession";
 
         protected BDData BDData = new();
-        protected Data Data = new();
-
         protected IInput I_process;
-
         protected readonly State State = new();
-
         protected IInput<int, string> I_clientLogger;
 
+        //---------------------BD---------------------------
         /// <summary>
         /// Загружаем данные клиента.
         /// </summary>
         protected IInput<BDData> I_DBLoadData;
+        //--------------------------------------------------
 
-        protected IInput<world.room.Setting, Connected.IWorldReceive> I_addToWorld;
+
+        //-----------------[Clinet->World]------------------
+        protected IInput<world.room.Setting> I_addToWorld;
         protected IInput<string> I_removeFromWorld;
+        //--------------------------------------------------
 
+        //-----------------[ROOM->CLIENT]-------------------
+        /// <summary>
+        /// Комната сообщает клиенту о том что она создана.
+        /// </summary>
+        protected IInput<string, int, int> IRoom_creating;
+
+        /// <summary>
+        /// Команда сообщает клиенту о движении в указаную позицию.
+        /// 1)Направление(поворот) 2)Позиция x 3)Позиция y
+        /// 4)Время начала движения.
+        /// 5)Время в миллисекундах за которое необходимо преодолеть дистанцию.
+        /// </summary>
+        protected IInput<int, int, int, DateTime, int> IRoom_characterMove;
+        //--------------------------------------------------
 
         protected void ReceiveTcp(byte[] message, int length)
         {
@@ -63,9 +66,20 @@ namespace server.client.gameSession
 
                             I_addToWorld.To(new world.room.Setting()
                             {
-                                ClientReceive = this,
-                            },
-                            this);
+                                StartPositionX = 167,
+                                StartPositionY = 298,
+
+                                SizeX = 1,
+                                SizeY = 1,
+
+                                Mobs = new unit.Mob[]
+                                {
+                                    new unit.Mob("name", 0, 1, 100, 0, 5, 5)
+                                },
+
+                                IRoom_creating = IRoom_creating,
+                                IRoom_characterMove = IRoom_characterMove,
+                            });
                         }
                         else LoggerError(info);
                     }
@@ -74,7 +88,6 @@ namespace server.client.gameSession
                 else throw new Exception();
             }
         }
-
 
         protected void Process()
         {
@@ -93,20 +106,6 @@ namespace server.client.gameSession
             }
         }
 
-        void Connected.IRoomReceive.Creating(string roomName)
-        {
-            LoggerInfo($"Комната {roomName} создана.");
-
-            lock (State.Locker)
-            {
-                if (State.HasInputToWorld())
-                {
-                }
-                else LoggerWarning("В момент получения сообщения о создании" +
-                    "комнаты обьект начал процесс уничтожения.");
-            }
-        }
-
         protected void Destroy(string info)
         {
             LoggerInfo(info);
@@ -114,10 +113,9 @@ namespace server.client.gameSession
             destroy();
         }
 
-
-        string Connected.IWorldReceive.GetNickname() => Field.Nickname;
-
         public string GetRoomName() => "";
+
+        public string GetNickname() => "";
 
         protected void LoggerInfo(string info)
         {
@@ -136,5 +134,6 @@ namespace server.client.gameSession
             if (StateInformation.IsCallConstruction)
                 I_clientLogger.To(Logger.WARNING, $"{NAME}:{GetKey()}[{info}]");
         }
+
     }
 }

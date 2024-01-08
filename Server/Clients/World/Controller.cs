@@ -11,8 +11,7 @@ namespace server.client.world
 
         private readonly Dictionary<string, room.Controller.IReceive> _rooms = new();
 
-        public room.Controller.IReceive Creating(string key, room.Setting settings, 
-            Connected.IWorldReceive client)
+        public room.Controller.IReceive Creating(string key, room.Setting settings)
         {
             if (_rooms.ContainsKey(key))
             {

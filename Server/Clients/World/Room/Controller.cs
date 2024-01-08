@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using Butterfly;
 
 namespace server.client.world.room
@@ -9,23 +10,56 @@ namespace server.client.world.room
 
         protected IInput<int, string> I_worldLogger;
 
-        protected Mob[] Mobs = new Mob[1];
-        private int _currentMob = 0;
+        // 0 - rigth, 1 - left
+        public int Direction;
+        public int CurrentPositionX, CurrentPositionY;
+        public int SizeX, SizeY;
 
-        private int _currentPosition = 0;
-        private int _nextPosition = 0;
+        private int Speed = 2200;
 
-        private bool IsRun = false;
+        private bool IsRun = true;
+        private bool IsSendRun = false;
+
         private bool IsAttack = false;
-        private bool IsBuff = false;
+
+        System.DateTime d_localDateTime = System.DateTime.Now;
+
+        protected unit.Mob[] Mobs;
+        private int MobIndex = 0;
 
         protected void Update()
         {
+            int deltaTime = (System.DateTime.Now.Subtract(d_localDateTime).Seconds * 1000)
+                + System.DateTime.Now.Subtract(d_localDateTime).Milliseconds;
+
+            d_localDateTime = System.DateTime.Now;
+
+            if (IsRun)
+            {
+                if (IsSendRun == false)
+                {
+                    // Начинаем двигать персонажа до ближайшего моба.
+                    // Узнаем растояние до него, вычисляем время движения в милисекундах.
+                    int distance = Math.Abs
+                        (CurrentPositionX + (SizeX / 2) - Mobs[MobIndex].PointLeft);
+
+                    int travelTime = distance / Speed;
+
+                    Field.IRoom_characterMove.To 
+                        (Direction, // Направление.
+                        Mobs[MobIndex].PointLeft - (SizeX / 2), // Левый край моба - пол персонажа.
+                        Field.StartPositionY, // Позиция Y у персонажа меняться не будет.
+                        d_localDateTime, // Время начала движения.
+                        travelTime); // Время затраченое на перемещение к мобу.
+
+                    IsSendRun = true;
+                }
+            }
         }
 
         public string GetName() => GetKey();
 
-        public interface IReceive 
+        public interface IReceive
         {
             public string GetName();
         }

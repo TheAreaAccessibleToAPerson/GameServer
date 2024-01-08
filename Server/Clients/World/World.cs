@@ -24,11 +24,11 @@ namespace server.client
         {
             send_message(ref I_worldLogger, Logger.Type.WORLD);
 
-            listen_echo_2_1<world.room.Setting, Connected.IWorldReceive, world.room.Controller.IReceive>
+            listen_echo_1_1<world.room.Setting, world.room.Controller.IReceive>
                 (BUS.Echo.CREATING)
-                    .output_to((settings, client, @return) =>
+                    .output_to((settings, @return) =>
                     {
-                        @return.To(Creating(GetUniqueID(), settings, client));
+                        @return.To(Creating(GetUniqueID(), settings));
                     },
                     Header.Events.SYSTEM);
 

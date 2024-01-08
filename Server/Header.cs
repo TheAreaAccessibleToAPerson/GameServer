@@ -14,13 +14,13 @@ namespace server
 
             public const string BD_AUTHORIZATION = "BD";
             public const string DB_DATA = "BD";
-            public const string BD_EQUIPMENT = "BD";
-            public const string BD_INVENTORY = "BD";
 
             public const string TCP_RECEIVE = "TcpReceive";
             public const string TCP_SEND = "TcpSend";
 
             public const string WORLD = "World";
+
+            public const string ROOM = "Room";
 
             public const string SSL_RECEIVE = "SslReceive";
             public const string SSL_SEND = "SslSend";
