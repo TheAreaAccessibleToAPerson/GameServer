@@ -43,7 +43,7 @@ namespace server.client
                     }
                 });
 
-            input_to(ref IRoom_creating, Header.Events.CLIENT, (roomName, positionX, positionY) =>
+            input_to(ref Data.IRoom_creating, Header.Events.CLIENT, (roomName, positionX, positionY) =>
             {
                 lock (State.Locker)
                 {
@@ -67,23 +67,27 @@ namespace server.client
                 }
             });
 
-            input_to(ref IRoom_characterMove, Header.Events.CLIENT, (direction, positionX, positionY,
-                dateTime, trevalTimeMill) =>
+            input_to(ref Data.IRoom_characterMove, Header.Events.CLIENT, (direction, positionX, positionY) =>
+            {
+                lock (State.Locker)
                 {
-                    lock (State.Locker)
+                    if (State.HasCreateRoom())
                     {
-                        if (State.HasCreateRoom())
-                        {
-                            LoggerInfo($"Character move:Direction[{direction}], PositionX[{positionX}], " + 
-                                $"PositionY[{positionY}], DateTime[{dateTime}], TrevalTimeMill[{trevalTimeMill}].");
+                        LoggerInfo($"Character move:Direction[{direction}], PositionX[{positionX}], " +
+                            $"PositionY[{positionY}].");
 
-                            I_sendMessageToClient.To(GetMoveCharacterPositionMessage
-                                (direction, positionX, positionY, dateTime, trevalTimeMill));
-                        }
-                        else LoggerWarning("Пришло сообщение из комнаты в момент когда состояния клента: " + 
-                            $"{State.CurrentState}.");
+                        I_sendMessagesToClient.To(new byte[][]
+                        {
+                            GetCharacterDirectionMessage(direction),
+                            GetCharacterMoveSpeed(),
+                            GetMoveCharacterPositionMessage(positionX, positionY),
+                            GetCharacterStartMoveMessage()
+                        });
                     }
-                });
+                    else LoggerWarning("Пришло сообщение из комнаты в момент когда состояния клента: " +
+                        $"{State.CurrentState}.");
+                }
+            });
         }
 
 

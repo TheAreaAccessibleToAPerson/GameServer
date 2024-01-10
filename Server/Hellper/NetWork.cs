@@ -18,7 +18,42 @@ public struct NetWork
         private const int NEXT_CHARACTER_POSITION = 3;
         private const int CREATING_CHARACTER = 4;
         private const int END_CREATING_SCANE = 5;
-        private const int MOVE_CHARACTER = 6;
+
+
+        /// <summary>
+        /// Передать позицию для персонажа до которой нужно двигаться.
+        /// </summary>
+        private const int MOVE_CHARACTER_POSITION = 6;
+
+        /// <summary>
+        /// Начать бег персонажа.
+        /// </summary>
+        private const int CHARACTER_START_MOVE = 7;
+
+        /// <summary>
+        /// Остановить передвижение персонажa.
+        /// </summary>
+        private const int CHARACTER_STOP_MOVE = 8;
+
+        /// <summary>
+        /// Поворот персонажа в право.
+        /// </summary>
+        private const int CHARACTER_DIRECTION_RIGTH = 9;
+
+        /// <summary>
+        /// Поворот персонажа в лево.
+        /// </summary>
+        private const int CHARACTER_DIRECTION_LEFT = 10;
+
+        /// <summary>
+        /// Скорость бега.
+        /// </summary>
+        private const int CHARACTER_MOVE_SPEED = 11;
+
+        /// <summary>
+        /// Создать моба.
+        /// </summary>
+        private const int CREATING_MOB = 1000;
 
         /// <summary>
         /// Ответ указывающий на успешную авторизацию.
@@ -54,7 +89,7 @@ public struct NetWork
         public struct NextCharacterPosition 
         {
             public const int TYPE = NetWork.Server.NEXT_CHARACTER_POSITION;
-            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 8;
 
             public const int POSITION_X_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int POSITION_X_2BYTE_INDEX = POSITION_X_1BYTE_INDEX + 1;
@@ -87,15 +122,13 @@ public struct NetWork
 
         public struct CharacterMove 
         {
-            public const int TYPE = NetWork.Server.MOVE_CHARACTER;
-            public const int LENGTH = NetWork.HEADER_LENGTH + 21;
-
-            public const int DIRECTION_INDEX = NetWork.HEADER_LENGTH;
+            public const int TYPE = NetWork.Server.MOVE_CHARACTER_POSITION;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 8;
 
             /// <summary>
             /// Позиция в которую нужно переместиться.
             /// </summary>
-            public const int POSITION_X_1BYTE_INDEX = DIRECTION_INDEX + 1;
+            public const int POSITION_X_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             /// <summary>
             /// Позиция в которую нужно переместиться.
             /// </summary>
@@ -130,68 +163,39 @@ public struct NetWork
             /// Позиция в которую нужно переместиться.
             /// </summary>
             public const int POSITION_Y_4BYTE_INDEX = POSITION_Y_3BYTE_INDEX + 1;
+        }
 
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_MILL_1BYTE_INDEX = POSITION_Y_4BYTE_INDEX + 1;
+        public struct CharacterRun 
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_START_MOVE;
+            public const int LENGTH = NetWork.HEADER_LENGTH;
+        }
 
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_MILL_2BYTE_INDEX = START_MOVE_TIME_MILL_1BYTE_INDEX + 1;
+        public struct CharacterStop
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_STOP_MOVE;
+            public const int LENGTH = NetWork.HEADER_LENGTH;
+        }
 
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_SEC_INDEX = START_MOVE_TIME_MILL_2BYTE_INDEX + 1;
+        public struct CharacterDirectionRigth
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_DIRECTION_RIGTH;
+            public const int LENGTH = NetWork.HEADER_LENGTH;
+        }
 
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_MIN_INDEX = START_MOVE_TIME_SEC_INDEX + 1;
+        public struct CharacterDirectionLeft
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_DIRECTION_LEFT;
+            public const int LENGTH = NetWork.HEADER_LENGTH;
+        }
 
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_HOUR_INDEX = START_MOVE_TIME_MIN_INDEX + 1;
+        public struct CharacterMoveSpeed
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_MOVE_SPEED;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 2;
 
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_DAY_INDEX = START_MOVE_TIME_HOUR_INDEX + 1;
-
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_MOUNTH_INDEX = START_MOVE_TIME_DAY_INDEX + 1;
-
-            /// <summary>
-            /// Время начала движения.
-            /// </summary>
-            public const int START_MOVE_TIME_YEAR_INDEX = START_MOVE_TIME_MOUNTH_INDEX + 1;
-
-
-
-            /// <summary>
-            /// Время в миллисекундах за которое нужно преодалеть данный путь.
-            /// </summary>
-            public const int TRAVEL_TIME_MILL_1BYTE_INDEX = START_MOVE_TIME_YEAR_INDEX + 1;
-
-            /// <summary>
-            /// Время за которое нужно преодалеть данный путь.
-            /// </summary>
-            public const int TRAVEL_TIME_MILL_2BYTE_INDEX = TRAVEL_TIME_MILL_1BYTE_INDEX + 1;
-
-            /// <summary>
-            /// Время за которое нужно преодалеть данный путь.
-            /// </summary>
-            public const int TRAVEL_TIME_MILL_3BYTE_INDEX = TRAVEL_TIME_MILL_2BYTE_INDEX + 1;
-
-            /// <summary>
-            /// Время за которое нужно преодалеть данный путь.
-            /// </summary>
-            public const int TRAVEL_TIME_MILL_4BYTE_INDEX = TRAVEL_TIME_MILL_3BYTE_INDEX + 1;
+            public const int MOVE_SPEED_1BYTE_INDEX = NetWork.HEADER_LENGTH;
+            public const int MOVE_SPEED_2BYTE_INDEX = MOVE_SPEED_1BYTE_INDEX + 1;
         }
     }
 

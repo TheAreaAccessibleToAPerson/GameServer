@@ -47,7 +47,7 @@ namespace server.client.world
             SizeY = Field.SizeY;
 
             // Сообщаем что комната создана.
-            Field.IRoom_creating.To(GetKey(), CurrentPositionX, CurrentPositionY);
+            Field.ClientData.IRoom_creating.To(GetKey(), CurrentPositionX, CurrentPositionY);
         }
     }
 }

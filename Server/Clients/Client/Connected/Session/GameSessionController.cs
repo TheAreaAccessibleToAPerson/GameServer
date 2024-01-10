@@ -4,41 +4,6 @@ namespace server.client.gameSession
 {
     public abstract class Controller : Main
     {
-        private const string NAME = "GameSession";
-
-        protected BDData BDData = new();
-        protected IInput I_process;
-        protected readonly State State = new();
-        protected IInput<int, string> I_clientLogger;
-
-        //---------------------BD---------------------------
-        /// <summary>
-        /// Загружаем данные клиента.
-        /// </summary>
-        protected IInput<BDData> I_DBLoadData;
-        //--------------------------------------------------
-
-
-        //-----------------[Clinet->World]------------------
-        protected IInput<world.room.Setting> I_addToWorld;
-        protected IInput<string> I_removeFromWorld;
-        //--------------------------------------------------
-
-        //-----------------[ROOM->CLIENT]-------------------
-        /// <summary>
-        /// Комната сообщает клиенту о том что она создана.
-        /// </summary>
-        protected IInput<string, int, int> IRoom_creating;
-
-        /// <summary>
-        /// Команда сообщает клиенту о движении в указаную позицию.
-        /// 1)Направление(поворот) 2)Позиция x 3)Позиция y
-        /// 4)Время начала движения.
-        /// 5)Время в миллисекундах за которое необходимо преодолеть дистанцию.
-        /// </summary>
-        protected IInput<int, int, int, DateTime, int> IRoom_characterMove;
-        //--------------------------------------------------
-
         protected void ReceiveTcp(byte[] message, int length)
         {
         }
@@ -74,11 +39,16 @@ namespace server.client.gameSession
 
                                 Mobs = new unit.Mob[]
                                 {
-                                    new unit.Mob("name", 0, 1, 100, 0, 5, 5)
+                                    new unit.Mob("name", 
+                                    0, 
+                                    1, 
+                                    467, 
+                                    298, 
+                                    5, 
+                                    5)
                                 },
 
-                                IRoom_creating = IRoom_creating,
-                                IRoom_characterMove = IRoom_characterMove,
+                                ClientData = Data
                             });
                         }
                         else LoggerError(info);

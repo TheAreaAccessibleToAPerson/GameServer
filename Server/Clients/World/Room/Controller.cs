@@ -15,8 +15,6 @@ namespace server.client.world.room
         public int CurrentPositionX, CurrentPositionY;
         public int SizeX, SizeY;
 
-        private int Speed = 2200;
-
         private bool IsRun = true;
         private bool IsSendRun = false;
 
@@ -43,14 +41,10 @@ namespace server.client.world.room
                     int distance = Math.Abs
                         (CurrentPositionX + (SizeX / 2) - Mobs[MobIndex].PointLeft);
 
-                    int travelTime = distance / Speed;
-
-                    Field.IRoom_characterMove.To 
+                    Field.ClientData.IRoom_characterMove.To 
                         (Direction, // Направление.
                         Mobs[MobIndex].PointLeft - (SizeX / 2), // Левый край моба - пол персонажа.
-                        Field.StartPositionY, // Позиция Y у персонажа меняться не будет.
-                        d_localDateTime, // Время начала движения.
-                        travelTime); // Время затраченое на перемещение к мобу.
+                        Field.StartPositionY); // Позиция Y у персонажа меняться не будет.
 
                     IsSendRun = true;
                 }

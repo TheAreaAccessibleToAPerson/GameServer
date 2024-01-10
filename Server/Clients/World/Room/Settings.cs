@@ -15,18 +15,6 @@ namespace server.client.world.room
 
         public unit.Mob[] Mobs { init; get; }
 
-        /// <summary>
-        /// Сообщает о том что комната создана.
-        /// </summary>
-        /// <value></value>
-        public IInput<string, int, int> IRoom_creating { init; get; }
-
-        /// <summary>
-        /// Команда сообщает клиенту о движении в указаную позицию.
-        /// 1)Направление(поворот) 2)Позиция x 3)Позиция y
-        /// 4)Время начала движения.
-        /// 5)Время в миллисекундах за которое необходимо преодолеть дистанцию.
-        /// </summary>
-        public IInput<int, int, int, DateTime, int> IRoom_characterMove { init; get; }
+        public gameSession.Data ClientData { init; get; }
     }
 }
