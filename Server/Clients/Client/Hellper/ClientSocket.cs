@@ -52,6 +52,108 @@ namespace server.client
             }
         }
 
+        public new void Send(byte[] buffer1, byte[] buffer2, byte[] buffer3, 
+            byte[] buffer4, byte[] buffer5)
+        {
+            if (_isRunning == false) return;
+
+            byte[] buffer = new byte[buffer1.Length + buffer2.Length + 
+                buffer3.Length + buffer4.Length + buffer5.Length];
+
+            int index = 0;
+
+            for (int i = 0; i < buffer1.Length; i++) buffer[index++] = buffer1[i];
+            for (int i = 0; i < buffer2.Length; i++) buffer[index++] = buffer2[i];
+            for (int i = 0; i < buffer3.Length; i++) buffer[index++] = buffer3[i];
+            for (int i = 0; i < buffer4.Length; i++) buffer[index++] = buffer4[i];
+            for (int i = 0; i < buffer5.Length; i++) buffer[index++] = buffer4[i];
+
+            try 
+            {
+                base.Send(buffer);
+            }
+            catch (Exception ex)
+            {
+                _isRunning = false;
+
+                Destroy(ex.ToString());
+            }
+        }
+
+        public new void Send(byte[] buffer1, byte[] buffer2, byte[] buffer3, 
+            byte[] buffer4)
+        {
+            if (_isRunning == false) return;
+
+            byte[] buffer = new byte[buffer1.Length + buffer2.Length + 
+                buffer3.Length + buffer4.Length];
+
+            int index = 0;
+
+            for (int i = 0; i < buffer1.Length; i++) buffer[index++] = buffer1[i];
+            for (int i = 0; i < buffer2.Length; i++) buffer[index++] = buffer2[i];
+            for (int i = 0; i < buffer3.Length; i++) buffer[index++] = buffer3[i];
+            for (int i = 0; i < buffer4.Length; i++) buffer[index++] = buffer4[i];
+
+            try 
+            {
+                base.Send(buffer);
+            }
+            catch (Exception ex)
+            {
+                _isRunning = false;
+
+                Destroy(ex.ToString());
+            }
+        }
+
+        public new void Send(byte[] buffer1, byte[] buffer2, byte[] buffer3)
+        {
+            if (_isRunning == false) return;
+
+            byte[] buffer = new byte[buffer1.Length + buffer2.Length + 
+                buffer3.Length];
+
+            int index = 0;
+
+            for (int i = 0; i < buffer1.Length; i++) buffer[index++] = buffer1[i];
+            for (int i = 0; i < buffer2.Length; i++) buffer[index++] = buffer2[i];
+            for (int i = 0; i < buffer3.Length; i++) buffer[index++] = buffer3[i];
+
+            try 
+            {
+                base.Send(buffer);
+            }
+            catch (Exception ex)
+            {
+                _isRunning = false;
+
+                Destroy(ex.ToString());
+            }
+        }
+
+        public new void Send(byte[] buffer1, byte[] buffer2)
+        {
+            if (_isRunning == false) return;
+
+            byte[] buffer = new byte[buffer1.Length + buffer2.Length];
+            int index = 0;
+
+            for (int i = 0; i < buffer1.Length; i++) buffer[index++] = buffer1[i];
+            for (int i = 0; i < buffer2.Length; i++) buffer[index++] = buffer2[i];
+
+            try 
+            {
+                base.Send(buffer);
+            }
+            catch (Exception ex)
+            {
+                _isRunning = false;
+
+                Destroy(ex.ToString());
+            }
+        }
+
         public new void Send(byte[] buffer)
         {
             if (_isRunning == false) return;

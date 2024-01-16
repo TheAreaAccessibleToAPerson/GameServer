@@ -31,21 +31,25 @@ namespace server.client.gameSession
 
                             I_addToWorld.To(new world.room.Setting()
                             {
-                                StartPositionX = 167,
-                                StartPositionY = 298,
+                                StartPositionX = 195,
+                                StartPositionY = 195,
 
-                                SizeX = 1,
-                                SizeY = 1,
+                                SizeX = 10,
+                                SizeY = 10,
 
                                 Mobs = new unit.Mob[]
                                 {
-                                    new unit.Mob("name", 
+                                    new unit.Mob(
+                                    1, 
                                     0, 
                                     1, 
-                                    467, 
-                                    298, 
-                                    5, 
-                                    5)
+                                    600, 
+                                    170, 
+                                    210, 
+                                    140,
+                                    100,
+                                    100,
+                                    100)
                                 },
 
                                 ClientData = Data

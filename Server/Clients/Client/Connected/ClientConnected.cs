@@ -10,6 +10,10 @@ namespace server.client
 
             input_to(ref I_sendMessageToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
             input_to(ref I_sendMessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
+            input_to(ref I_send2MessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
+            input_to(ref I_send3MessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
+            input_to(ref I_send4MessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
+            input_to(ref I_send5MessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
 
             send_message(ref I_clientLogger, Logger.Type.CLIENT);
 
@@ -55,6 +59,7 @@ namespace server.client
 
                             I_sendMessagesToClient.To(new byte[][]
                             {
+                                GetCreatingCharacterHMSBar(),
                                 GetCreatingCharacterMessage(),
                                 GetCreatingRoomMessage(),
                                 GetNextCharacterPositionMessage(positionX, positionY),
@@ -76,13 +81,28 @@ namespace server.client
                         LoggerInfo($"Character move:Direction[{direction}], PositionX[{positionX}], " +
                             $"PositionY[{positionY}].");
 
-                        I_sendMessagesToClient.To(new byte[][]
-                        {
+                        I_send4MessagesToClient.To
+                        (
                             GetCharacterDirectionMessage(direction),
-                            GetCharacterMoveSpeed(),
+                            GetCharacterMoveSpeedMessage(),
                             GetMoveCharacterPositionMessage(positionX, positionY),
                             GetCharacterStartMoveMessage()
-                        });
+                        );
+                    }
+                    else LoggerWarning("Пришло сообщение из комнаты в момент когда состояния клента: " +
+                        $"{State.CurrentState}.");
+                }
+            });
+
+            input_to(ref Data.IRoom_creatingMob, Header.Events.CLIENT, (mob) => 
+            {
+                lock (State.Locker)
+                {
+                    if (State.HasCreateRoom())
+                    {
+                        LoggerInfo($"Creating mob:ID{mob.ID}");
+
+                        I_sendMessageToClient.To(GetCreatingMobMessage(mob));
                     }
                     else LoggerWarning("Пришло сообщение из комнаты в момент когда состояния клента: " +
                         $"{State.CurrentState}.");

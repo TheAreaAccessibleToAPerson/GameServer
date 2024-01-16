@@ -40,11 +40,15 @@ namespace server.client.world.room
                     // Узнаем растояние до него, вычисляем время движения в милисекундах.
                     int distance = Math.Abs
                         (CurrentPositionX + (SizeX / 2) - Mobs[MobIndex].PointLeft);
-
+                    
                     Field.ClientData.IRoom_characterMove.To 
                         (Direction, // Направление.
                         Mobs[MobIndex].PointLeft - (SizeX / 2), // Левый край моба - пол персонажа.
                         Field.StartPositionY); // Позиция Y у персонажа меняться не будет.
+
+                    SystemInformation((Mobs[MobIndex].PointLeft - (SizeX / 2)).ToString());
+
+                    Field.ClientData.IRoom_creatingMob.To(Mobs[MobIndex]);
 
                     IsSendRun = true;
                 }

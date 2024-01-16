@@ -26,6 +26,10 @@ namespace server.client.gameSession
         //--------------------------------------------------
         protected IInput<byte[]> I_sendMessageToClient;
         protected IInput<byte[][]> I_sendMessagesToClient;
+        protected IInput<byte[], byte[]> I_send2MessagesToClient;
+        protected IInput<byte[], byte[], byte[]> I_send3MessagesToClient;
+        protected IInput<byte[], byte[], byte[], byte[]> I_send4MessagesToClient;
+        protected IInput<byte[], byte[], byte[], byte[], byte[]> I_send5MessagesToClient;
 
         protected Data Data = new();
 
@@ -155,7 +159,7 @@ namespace server.client.gameSession
             else throw new Exception();
         }
 
-        protected byte[] GetCharacterMoveSpeed()
+        protected byte[] GetCharacterMoveSpeedMessage()
         {
             return new byte[NetWork.Server.CharacterMoveSpeed.LENGTH]
             {
@@ -167,6 +171,198 @@ namespace server.client.gameSession
 
                 (byte)(Data.SpeedMove >> 8),
                 (byte)(Data.SpeedMove)
+            };
+        }
+
+        protected byte[] GetCreatingMobMessage(unit.Mob mob)
+        {
+            return new byte[NetWork.Server.CreatingMob.LENGTH]
+            {
+                NetWork.Server.CreatingMob.LENGTH >> 8,
+                NetWork.Server.CreatingMob.LENGTH,
+
+                (byte)(NetWork.Server.CreatingMob.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CreatingMob.TYPE),
+
+                (byte)(mob.Name >> 8), (byte)mob.Name,
+
+                (byte)(mob.ID >> 8), (byte)mob.ID,
+
+                (byte)mob.Direction,
+
+                (byte)(mob.PositionX >> 24), // PositionX
+                (byte)(mob.PositionX >> 16), // PositionX
+                (byte)(mob.PositionX >> 8), // PositionX
+                (byte)mob.PositionX, // PositionX
+
+                (byte)(mob.PositionY >> 24), // PositionY
+                (byte)(mob.PositionY >> 16), // PositionY
+                (byte)(mob.PositionY >> 8), // PositionY
+                (byte)(mob.PositionY), // PositionY
+            };
+        }
+
+        protected byte[] GetCreatingEnemyMobBar(unit.Mob mob)
+        {
+            return new byte[NetWork.Server.CreatingEnemyMobBar.LENGTH]
+            {
+                NetWork.Server.CreatingEnemyMobBar.LENGTH >> 8,
+                NetWork.Server.CreatingEnemyMobBar.LENGTH,
+
+                (byte)(NetWork.Server.CreatingEnemyMobBar.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CreatingEnemyMobBar.TYPE),
+
+                (byte)(mob.BarName >> 8), (byte)(mob.BarName),
+
+                (byte)(mob.HP >> 24), (byte)(mob.HP >> 16),
+                (byte)(mob.HP >> 8), (byte)(mob.HP),
+
+                (byte)(mob.MP >> 24), (byte)(mob.MP >> 16),
+                (byte)(mob.MP >> 8), (byte)(mob.MP),
+
+                (byte)(mob.Shield >> 24), (byte)(mob.Shield >> 16),
+                (byte)(mob.Shield >> 8), (byte)(mob.Shield),
+
+                (byte)(mob.CurrentHP >> 24), (byte)(mob.CurrentHP >> 16),
+                (byte)(mob.CurrentHP >> 8), (byte)(mob.CurrentHP),
+
+                (byte)(mob.CurrentMP >> 24), (byte)(mob.CurrentMP >> 16),
+                (byte)(mob.CurrentMP >> 8), (byte)(mob.CurrentMP),
+
+                (byte)(mob.CurrentShield >> 24), (byte)(mob.CurrentShield >> 16),
+                (byte)(mob.CurrentShield >> 8), (byte)(mob.CurrentShield)
+            };
+        }
+
+        protected byte[] GetCharacterHP(int HP)
+        {
+            return new byte[NetWork.Server.CharacterHP.LENGTH]
+            {
+                NetWork.Server.CharacterHP.LENGTH >> 8,
+                NetWork.Server.CharacterHP.LENGTH,
+
+                (byte)(NetWork.Server.CharacterHP.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CharacterHP.TYPE),
+
+                (byte)(HP >> 24), (byte)(HP >> 16),
+                (byte)(HP >> 8), (byte)(HP),
+            };
+        }
+
+        protected byte[] GetCharacterMP(int MP)
+        {
+            return new byte[NetWork.Server.CharacterMP.LENGTH]
+            {
+                NetWork.Server.CharacterMP.LENGTH >> 8,
+                NetWork.Server.CharacterMP.LENGTH,
+
+                (byte)(NetWork.Server.CharacterMP.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CharacterMP.TYPE),
+
+                (byte)(MP >> 24), (byte)(MP >> 16),
+                (byte)(MP >> 8), (byte)(MP),
+            };
+        }
+
+        protected byte[] GetCharacterShield(int Shield)
+        {
+            return new byte[NetWork.Server.CharacterShield.LENGTH]
+            {
+                NetWork.Server.CharacterShield.LENGTH >> 8,
+                NetWork.Server.CharacterShield.LENGTH,
+
+                (byte)(NetWork.Server.CharacterShield.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CharacterShield.TYPE),
+
+                (byte)(Shield >> 24), (byte)(Shield >> 16),
+                (byte)(Shield >> 8), (byte)(Shield),
+            };
+        }
+
+        protected byte[] GetCharacterCurrentHP(int HP)
+        {
+            return new byte[NetWork.Server.CharacterCurrentHP.LENGTH]
+            {
+                NetWork.Server.CharacterCurrentHP.LENGTH >> 8,
+                NetWork.Server.CharacterCurrentHP.LENGTH,
+
+                (byte)(NetWork.Server.CharacterCurrentHP.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CharacterCurrentHP.TYPE),
+
+                (byte)(HP >> 24), (byte)(HP >> 16),
+                (byte)(HP >> 8), (byte)(HP),
+            };
+        }
+
+        protected byte[] GetCharacterCurrentMP(int MP)
+        {
+            return new byte[NetWork.Server.CharacterCurrentMP.LENGTH]
+            {
+                NetWork.Server.CharacterCurrentMP.LENGTH >> 8,
+                NetWork.Server.CharacterCurrentMP.LENGTH,
+
+                (byte)(NetWork.Server.CharacterCurrentMP.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CharacterCurrentMP.TYPE),
+
+                (byte)(MP >> 24), (byte)(MP >> 16),
+                (byte)(MP >> 8), (byte)(MP),
+            };
+        }
+
+        protected byte[] GetCharacterCurrentShield(int Shield)
+        {
+            return new byte[NetWork.Server.CharacterCurrentShield.LENGTH]
+            {
+                NetWork.Server.CharacterCurrentShield.LENGTH >> 8,
+                NetWork.Server.CharacterCurrentShield.LENGTH,
+
+                (byte)(NetWork.Server.CharacterCurrentShield.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CharacterCurrentShield.TYPE),
+
+                (byte)(Shield >> 24), (byte)(Shield >> 16),
+                (byte)(Shield >> 8), (byte)(Shield),
+            };
+        }
+
+        protected byte[] GetCreatingCharacterHMSBar()
+        {
+            int barName = Data.BarName;
+
+            int HP = Data.HP; 
+            int MP = Data.MP; 
+            int Shield = Data.Shield;
+
+            int currentHP = Data.CurrentHP; 
+            int currentMP = Data.CurrentMP;
+            int currentShield = Data.CurrentShield;
+
+            return new byte[NetWork.Server.CreatingCharacterBar.LENGTH]
+            {
+                NetWork.Server.CreatingCharacterBar.LENGTH >> 8,
+                NetWork.Server.CreatingCharacterBar.LENGTH,
+
+                (byte)(NetWork.Server.CreatingCharacterBar.TYPE >> 8),
+                unchecked((byte)NetWork.Server.CreatingCharacterBar.TYPE),
+
+                (byte)(barName >> 8), (byte)(barName),
+
+                (byte)(HP >> 24), (byte)(HP >> 16),
+                (byte)(HP >> 8), (byte)(HP),
+
+                (byte)(MP >> 24), (byte)(MP >> 16),
+                (byte)(MP >> 8), (byte)(MP),
+
+                (byte)(Shield >> 24), (byte)(Shield >> 16),
+                (byte)(Shield >> 8), (byte)(Shield),
+
+                (byte)(currentHP >> 24), (byte)(currentHP >> 16),
+                (byte)(currentHP >> 8), (byte)(currentHP),
+
+                (byte)(currentMP >> 24), (byte)(currentMP >> 16),
+                (byte)(currentMP >> 8), (byte)(currentMP),
+
+                (byte)(currentShield >> 24), (byte)(currentShield >> 16),
+                (byte)(currentShield >> 8), (byte)(currentShield)
             };
         }
     }

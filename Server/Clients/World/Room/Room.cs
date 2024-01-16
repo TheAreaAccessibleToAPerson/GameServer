@@ -35,7 +35,7 @@ namespace server.client.world
             }
             else
             {
-                LoggerInfo($"Было получено {Field.Mobs} мобов.");
+                LoggerInfo($"Было получено {Field.Mobs.Length} мобов.");
 
                 Mobs = Field.Mobs;
             }

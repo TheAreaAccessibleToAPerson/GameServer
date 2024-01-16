@@ -56,6 +56,75 @@ public struct NetWork
         private const int CREATING_MOB = 1000;
 
         /// <summary>
+        /// Вражеский бар HP/MP/SHIELD
+        /// </summary>
+        private const int CREATING_ENEMY_MOB_BAR = 2000;
+
+        /// <summary>
+        /// Создает бар персонажа.
+        /// </summary>
+        private const int CREATING_CHARACTER_BAR = 2001;
+
+        /// <summary>
+        /// Передает общее количесво здоровья у персонажа.
+        /// </summary>
+        private const int CHARACTER_HP = 2002;
+
+        /// <summary>
+        /// Передает общее количесво маны у персонажа.
+        /// </summary>
+        private const int CHARACTER_MP = 2003;
+
+        /// <summary>
+        /// Передает общее количесво щита у персонажа.
+        /// </summary>
+        private const int CHARACTER_SHIELD = 2004;
+
+        /// <summary>
+        /// Передает общее количесво здоровья у вражеского моба.
+        /// </summary>
+        private const int ENEMY_MOB_HP = 2005;
+
+        /// <summary>
+        /// Передает общее количесво маны у вражеского моба.
+        /// </summary>
+        private const int ENEMY_MOB_MP = 2006;
+
+        /// <summary>
+        /// Передает общее количесво щата у вражеского моба.
+        /// </summary>
+        private const int ENEMY_MOB_SHIELD = 2007;
+
+
+        /// <summary>
+        /// Передает текущее количесво здоровья у персонажа.
+        /// </summary>
+        private const int CHARACTER_CURRENT_HP = 2008;
+
+        /// <summary>
+        /// Передает текущее количесво маны у персонажа.
+        /// </summary>
+        private const int CHARACTER_CURRENT_MP = 2009;
+
+        /// <summary>
+        /// Передает текущее количесво щита у персонажа.
+        /// </summary>
+        private const int CHARACTER_CURRENT_SHIELD = 2010;
+
+        /// <summary>
+        /// Передает текущее количесво hp у вражеского моба.
+        /// </summary>
+        private const int ENEMY_MOB_CURRENT_HP = 2011;
+        /// <summary>
+        /// Передает текущее количесво mp у вражеского моба.
+        /// </summary>
+        private const int ENEMY_MOB_CURRENT_MP = 2012;
+        /// <summary>
+        /// Передает текущее количесво shield у вражеского моба.
+        /// </summary>
+        private const int ENEMY_MOB_CURRENT_SHIELD = 2013;
+
+        /// <summary>
         /// Ответ указывающий на успешную авторизацию.
         /// </summary>
         public struct AccessVerification
@@ -107,7 +176,7 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CREATING_CHARACTER;
             public const int LENGTH = NetWork.HEADER_LENGTH + 2;
 
-            public const int CHARACTER_NAME_1BYTE_INDEX_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int CHARACTER_NAME_1BYTE_INDEX_INDEX = NetWork.HEADER_LENGTH;
             public const int CHARACTER_NAME_2BYTE_INDEX_INDEX = CHARACTER_NAME_1BYTE_INDEX_INDEX;
         }
 
@@ -196,6 +265,178 @@ public struct NetWork
 
             public const int MOVE_SPEED_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int MOVE_SPEED_2BYTE_INDEX = MOVE_SPEED_1BYTE_INDEX + 1;
+        }
+
+        /// <summary>
+        /// Создание моба.
+        /// </summary>
+        public struct CreatingMob 
+        {
+            public const int TYPE = NetWork.Server.CREATING_MOB;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 13;
+
+            public const int MOB_NAME_1BYTE_INDEX = NetWork.HEADER_LENGTH;
+            public const int MOB_NAME_2BYTE_INDEX = MOB_NAME_1BYTE_INDEX + 1;
+
+            public const int MOB_ID_1BYTE_INDEX = MOB_NAME_2BYTE_INDEX + 1;
+            public const int MOB_ID_2BYTE_INDEX = MOB_ID_1BYTE_INDEX + 1;
+
+            public const int MOB_DIRECTION_INDEX = MOB_ID_2BYTE_INDEX + 1;
+
+            public const int POSITION_X_1BYTE_INDEX = MOB_DIRECTION_INDEX + 1;
+            public const int POSITION_X_2BYTE_INDEX = POSITION_X_1BYTE_INDEX + 1;
+            public const int POSITION_X_3BYTE_INDEX = POSITION_X_2BYTE_INDEX + 1;
+            public const int POSITION_X_4BYTE_INDEX = POSITION_X_3BYTE_INDEX + 1;
+
+            public const int POSITION_Y_1BYTE_INDEX = POSITION_X_4BYTE_INDEX + 1;
+            public const int POSITION_Y_2BYTE_INDEX = POSITION_Y_1BYTE_INDEX + 1;
+            public const int POSITION_Y_3BYTE_INDEX = POSITION_Y_2BYTE_INDEX + 1;
+            public const int POSITION_Y_4BYTE_INDEX = POSITION_Y_3BYTE_INDEX + 1;
+
+        }
+
+        public struct CreatingCharacterBar
+        {
+            public const int TYPE = NetWork.Server.CREATING_CHARACTER_BAR;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 26;
+
+            public const int CREATING_BAR_NAME_1BYTE_INDEX = NetWork.HEADER_LENGTH;
+            public const int CREATING_BAR_NAME_2BYTE_INDEX = CREATING_BAR_NAME_1BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_HP_1BYTE_INDEX = CREATING_BAR_NAME_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_HP_2BYTE_INDEX = CREATING_BAR_HP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_HP_3BYTE_INDEX = CREATING_BAR_HP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_HP_4BYTE_INDEX = CREATING_BAR_HP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_MP_1BYTE_INDEX =  CREATING_BAR_HP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_MP_2BYTE_INDEX =  CREATING_BAR_MP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_MP_3BYTE_INDEX =  CREATING_BAR_MP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_MP_4BYTE_INDEX =  CREATING_BAR_MP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_SHIELD_1BYTE_INDEX = CREATING_BAR_MP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_SHIELD_2BYTE_INDEX = CREATING_BAR_SHIELD_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_SHIELD_3BYTE_INDEX = CREATING_BAR_SHIELD_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_SHIELD_4BYTE_INDEX = CREATING_BAR_SHIELD_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_CURRENT_HP_1BYTE_INDEX = CREATING_BAR_SHIELD_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_HP_2BYTE_INDEX = CREATING_BAR_CURRENT_HP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_HP_3BYTE_INDEX = CREATING_BAR_CURRENT_HP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_HP_4BYTE_INDEX = CREATING_BAR_CURRENT_HP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_CURRENT_MP_1BYTE_INDEX =  CREATING_BAR_CURRENT_HP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_MP_2BYTE_INDEX =  CREATING_BAR_CURRENT_MP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_MP_3BYTE_INDEX =  CREATING_BAR_CURRENT_MP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_MP_4BYTE_INDEX =  CREATING_BAR_CURRENT_MP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_CURRENT_SHIELD_1BYTE_INDEX = CREATING_BAR_CURRENT_MP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_SHIELD_2BYTE_INDEX = CREATING_BAR_CURRENT_SHIELD_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_SHIELD_3BYTE_INDEX = CREATING_BAR_CURRENT_SHIELD_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_SHIELD_4BYTE_INDEX = CREATING_BAR_CURRENT_SHIELD_3BYTE_INDEX + 1;
+        }
+
+        public struct CreatingEnemyMobBar
+        {
+            public const int TYPE = NetWork.Server.CREATING_ENEMY_MOB_BAR;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 26;
+
+            public const int CREATING_BAR_NAME_1BYTE_INDEX = NetWork.HEADER_LENGTH;
+            public const int CREATING_BAR_NAME_2BYTE_INDEX = CREATING_BAR_NAME_1BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_HP_1BYTE_INDEX = CREATING_BAR_NAME_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_HP_2BYTE_INDEX = CREATING_BAR_HP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_HP_3BYTE_INDEX = CREATING_BAR_HP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_HP_4BYTE_INDEX = CREATING_BAR_HP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_MP_1BYTE_INDEX =  CREATING_BAR_HP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_MP_2BYTE_INDEX =  CREATING_BAR_MP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_MP_3BYTE_INDEX =  CREATING_BAR_MP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_MP_4BYTE_INDEX =  CREATING_BAR_MP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_SHIELD_1BYTE_INDEX = CREATING_BAR_MP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_SHIELD_2BYTE_INDEX = CREATING_BAR_SHIELD_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_SHIELD_3BYTE_INDEX = CREATING_BAR_SHIELD_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_SHIELD_4BYTE_INDEX = CREATING_BAR_SHIELD_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_CURRENT_HP_1BYTE_INDEX = CREATING_BAR_SHIELD_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_HP_2BYTE_INDEX = CREATING_BAR_CURRENT_HP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_HP_3BYTE_INDEX = CREATING_BAR_CURRENT_HP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_HP_4BYTE_INDEX = CREATING_BAR_CURRENT_HP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_CURRENT_MP_1BYTE_INDEX =  CREATING_BAR_CURRENT_HP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_MP_2BYTE_INDEX =  CREATING_BAR_CURRENT_MP_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_MP_3BYTE_INDEX =  CREATING_BAR_CURRENT_MP_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_MP_4BYTE_INDEX =  CREATING_BAR_CURRENT_MP_3BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_CURRENT_SHIELD_1BYTE_INDEX = CREATING_BAR_CURRENT_MP_4BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_SHIELD_2BYTE_INDEX = CREATING_BAR_CURRENT_SHIELD_1BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_SHIELD_3BYTE_INDEX = CREATING_BAR_CURRENT_SHIELD_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_CURRENT_SHIELD_4BYTE_INDEX = CREATING_BAR_CURRENT_SHIELD_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterHP 
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_HP;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
+            public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
+            public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterMP
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_MP;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
+            public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
+            public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterShield
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_SHIELD;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
+            public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
+            public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterCurrentHP 
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_CURRENT_HP;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
+            public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
+            public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterCurrentMP
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_CURRENT_MP;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
+            public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
+            public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterCurrentShield
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_CURRENT_SHIELD;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 4;
+
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
+            public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
+            public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
         }
     }
 
