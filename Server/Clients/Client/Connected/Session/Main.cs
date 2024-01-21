@@ -33,6 +33,80 @@ namespace server.client.gameSession
 
         protected Data Data = new();
 
+        protected void SubstractMP(int value)
+        {
+            int currentMP = Data.CurrentMP;
+
+            if (currentMP > 0)
+            {
+            }
+            else 
+            {
+            }
+        }
+
+        protected void DefaultAttack(int speed, int damage)
+        {
+            LoggerInfo($"Начало атаки со скоростью{speed}");
+
+            I_sendMessageToClient.To(GetCharacterDefaultAttack(speed, damage));
+        }
+
+        /// <summary>
+        /// Вычитаем урон из щита и сдоровья.
+        /// </summary>
+        /// <param name="value"></param>
+        protected void SubstractHS(int value)
+        {
+            int currentShield = Data.CurrentShield;
+            int s = currentShield - value;
+            if (s >= 0)
+            {
+                LoggerInfo($"SubstractShield:{currentShield} - {value} = {s}");
+
+                // Если весь урон прошел по щиту.
+                Data.CurrentShield = s;
+
+                I_sendMessageToClient.To(GetCharacterCurrentShield(s));
+
+                return;
+            }
+            else 
+            {
+                LoggerInfo($"SubstractShield:{currentShield} - {value} = {s}");
+
+                // Если урона было больше, то выставим текущий щит в 0.
+                Data.CurrentShield = 0;
+
+                // Оставшийся урон сделаем положительным.
+                value = s * -1;
+            }
+
+            int currentHP = Data.CurrentHP;
+            int h = currentHP - value;
+            if (h > 0)
+            {
+                LoggerInfo($"SubstractHP:{currentHP} - {value} = {h}");
+
+                // Полученый урон не убил нас.
+                Data.CurrentHP = h;
+
+                I_send2MessagesToClient.To
+                (
+                    GetCharacterCurrentShield(s),
+                    GetCharacterCurrentHP(h)
+                );
+
+                return;
+            }
+            else 
+            {
+                LoggerInfo($"SubstractHP:{currentHP} - {value} = {h} (Death).");
+
+                // Смерть.
+            }
+        }
+
         protected byte[] GetMoveCharacterPositionMessage(int positionX, int positionY)
         {
             return new byte[NetWork.Server.CharacterMove.LENGTH]
@@ -364,6 +438,49 @@ namespace server.client.gameSession
                 (byte)(currentShield >> 24), (byte)(currentShield >> 16),
                 (byte)(currentShield >> 8), (byte)(currentShield)
             };
+        }
+
+        /// <summary>
+        /// Отправляет команду о начале обычной атаки.
+        /// Скорость атаки передается из комнаты, так как она должна
+        /// быть одинаковой от начала и до конца.
+        /// </summary>
+        /// <param name="speed"></param>
+        /// <returns></returns>
+        protected byte[] GetCharacterDefaultAttack(int speed, int damage)
+        {
+            return new byte[NetWork.Server.CharacterDefaultAttack.LENGTH]
+            {
+                NetWork.Server.CharacterDefaultAttack.LENGTH >> 8,
+                NetWork.Server.CharacterDefaultAttack.LENGTH,
+
+                (byte)(NetWork.Server.CharacterDefaultAttack.TYPE >> 8),
+                (byte)NetWork.Server.CharacterDefaultAttack.TYPE,
+
+                (byte)(speed >> 24), (byte)(speed >> 16), 
+                (byte)(speed >> 8), (byte)(speed),
+
+                (byte)(damage >> 24), (byte)(damage >> 16), 
+                (byte)(damage >> 8), (byte)(damage)
+            };
+        }
+
+        protected void LoggerInfo(string info)
+        {
+            if (StateInformation.IsCallConstruction)
+                I_clientLogger.To(Logger.INFO, $"{NAME}:{GetKey()}[{info}]");
+        }
+
+        protected void LoggerError(string info)
+        {
+            if (StateInformation.IsCallConstruction)
+                I_clientLogger.To(Logger.ERROR, $"{NAME}:{GetKey()}[{info}]");
+        }
+
+        protected void LoggerWarning(string info)
+        {
+            if (StateInformation.IsCallConstruction)
+                I_clientLogger.To(Logger.WARNING, $"{NAME}:{GetKey()}[{info}]");
         }
     }
 }

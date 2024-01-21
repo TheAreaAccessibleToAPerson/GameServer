@@ -91,23 +91,6 @@ namespace server.client.gameSession
 
         public string GetNickname() => "";
 
-        protected void LoggerInfo(string info)
-        {
-            if (StateInformation.IsCallConstruction)
-                I_clientLogger.To(Logger.INFO, $"{NAME}:{GetKey()}[{info}]");
-        }
-
-        protected void LoggerError(string info)
-        {
-            if (StateInformation.IsCallConstruction)
-                I_clientLogger.To(Logger.ERROR, $"{NAME}:{GetKey()}[{info}]");
-        }
-
-        protected void LoggerWarning(string info)
-        {
-            if (StateInformation.IsCallConstruction)
-                I_clientLogger.To(Logger.WARNING, $"{NAME}:{GetKey()}[{info}]");
-        }
 
     }
 }

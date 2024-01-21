@@ -51,6 +51,16 @@ public struct NetWork
         private const int CHARACTER_MOVE_SPEED = 11;
 
         /// <summary>
+        /// Персонаж бьет автоатакой(запускается воспроизведение анимации атаки);
+        /// </summary>
+        private const int CHARACTER_DEFAULT_ATTACK = 12;
+
+        /// <summary>
+        /// Вражеский моб начинает бить(запускается воспроизведение анимации атаки);
+        /// </summary>
+        private const int ENEMY_MOB_START_ATTACK = 13;
+
+        /// <summary>
         /// Создать моба.
         /// </summary>
         private const int CREATING_MOB = 1000;
@@ -378,7 +388,7 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CHARACTER_HP;
             public const int LENGTH = NetWork.HEADER_LENGTH + 4;
 
-            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
             public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
             public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
@@ -389,7 +399,7 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CHARACTER_MP;
             public const int LENGTH = NetWork.HEADER_LENGTH + 4;
 
-            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
             public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
             public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
@@ -400,7 +410,7 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CHARACTER_SHIELD;
             public const int LENGTH = NetWork.HEADER_LENGTH + 4;
 
-            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
             public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
             public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
@@ -411,7 +421,7 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CHARACTER_CURRENT_HP;
             public const int LENGTH = NetWork.HEADER_LENGTH + 4;
 
-            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
             public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
             public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
@@ -422,7 +432,7 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CHARACTER_CURRENT_MP;
             public const int LENGTH = NetWork.HEADER_LENGTH + 4;
 
-            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
             public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
             public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
@@ -433,10 +443,26 @@ public struct NetWork
             public const int TYPE = NetWork.Server.CHARACTER_CURRENT_SHIELD;
             public const int LENGTH = NetWork.HEADER_LENGTH + 4;
 
-            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH + 1;
+            public const int VALUE_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int VALUE_2BYTE_INDEX = VALUE_1BYTE_INDEX + 1;
             public const int VALUE_3BYTE_INDEX = VALUE_2BYTE_INDEX + 1;
             public const int VALUE_4BYTE_INDEX = VALUE_3BYTE_INDEX + 1;
+        }
+
+        public struct CharacterDefaultAttack
+        {
+            public const int TYPE = NetWork.Server.CHARACTER_DEFAULT_ATTACK;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 8;
+
+            public const int ATTACK_SPEED_1BYTE_INDEX = NetWork.HEADER_LENGTH;
+            public const int ATTACK_SPEED_2BYTE_INDEX = ATTACK_SPEED_1BYTE_INDEX + 1;
+            public const int ATTACK_SPEED_3BYTE_INDEX = ATTACK_SPEED_2BYTE_INDEX + 1;
+            public const int ATTACK_SPEED_4BYTE_INDEX = ATTACK_SPEED_3BYTE_INDEX + 1;
+
+            public const int ATTACK_DAMAGE_1BYTE_INDEX = ATTACK_SPEED_4BYTE_INDEX + 1;
+            public const int ATTACK_DAMAGE_2BYTE_INDEX = ATTACK_DAMAGE_1BYTE_INDEX + 1;
+            public const int ATTACK_DAMAGE_3BYTE_INDEX = ATTACK_DAMAGE_2BYTE_INDEX + 1;
+            public const int ATTACK_DAMAGE_4BYTE_INDEX = ATTACK_DAMAGE_3BYTE_INDEX + 1;
         }
     }
 

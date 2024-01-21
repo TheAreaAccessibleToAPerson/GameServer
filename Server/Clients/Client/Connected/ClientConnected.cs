@@ -25,6 +25,8 @@ namespace server.client
 
             Field.Tcp.Destroy = Destroy;
 
+            // Сдесь должен быть ворк потому что восновном мы будем работать
+            // с инветарем, а заюзы скилов и тд это мелочь.
             input_to(ref Field.Tcp.I_output, Header.Events.WORK, ReceiveTcp);
 
             add_event(Header.Events.TCP_RECEIVE, Field.Tcp.Receive);
@@ -46,6 +48,9 @@ namespace server.client
                     {
                     }
                 });
+
+            input_to(ref Data.IRoom_characterSubstractHS, Header.Events.CLIENT, SubstractHS);
+            input_to(ref Data.IRoom_characterDefaultAttack, Header.Events.CLIENT, DefaultAttack);
 
             input_to(ref Data.IRoom_creating, Header.Events.CLIENT, (roomName, positionX, positionY) =>
             {

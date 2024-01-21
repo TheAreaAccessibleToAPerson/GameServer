@@ -25,12 +25,27 @@ namespace server.client.world.room
         protected unit.Mob[] Mobs;
         private int MobIndex = 0;
 
+        private bool _isAttack = false;
+        private int lastAttack = 0;
+
         protected void Update()
         {
-            int deltaTime = (System.DateTime.Now.Subtract(d_localDateTime).Seconds * 1000)
+            int delta = (System.DateTime.Now.Subtract(d_localDateTime).Seconds * 1000)
                 + System.DateTime.Now.Subtract(d_localDateTime).Milliseconds;
 
-            d_localDateTime = System.DateTime.Now;
+            lastAttack += delta;
+
+            if (_isAttack == false)
+            {
+                if (lastAttack > 2000)
+                {
+                    Console("ATTACK");
+                    Field.ClientData.IRoom_characterDefaultAttack.To(10, 25);
+
+                    _isAttack = true;
+                }
+            }
+
 
             if (IsRun)
             {
@@ -53,6 +68,8 @@ namespace server.client.world.room
                     IsSendRun = true;
                 }
             }
+
+            d_localDateTime = System.DateTime.Now;
         }
 
         public string GetName() => GetKey();

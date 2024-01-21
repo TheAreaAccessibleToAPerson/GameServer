@@ -1,23 +1,9 @@
+using System.Xml.Schema;
 using Butterfly;
 
 namespace server.client.gameSession
 {
-    namespace data
-    {
-        public interface IGet
-        {
-            int HP();
-            int MP();
-            int Shield();
-
-            int CurrentHP();
-            int CurrentMP();
-            int CurrentShield();
-        }
-
-    }
-
-    public sealed class Data : data.IGet
+    public sealed class Data
     {
         public int BarName = 1;
 
@@ -30,14 +16,6 @@ namespace server.client.gameSession
 
         public int HP = 100, MP = 200, Shield = 100;
         public int CurrentHP = 100, CurrentMP = 200, CurrentShield = 100;
-
-        int data.IGet.HP() => HP;
-        int data.IGet.MP() => MP;
-        int data.IGet.Shield() => Shield;
-
-        int data.IGet.CurrentHP() => CurrentHP;
-        int data.IGet.CurrentMP() => CurrentMP;
-        int data.IGet.CurrentShield() => CurrentShield;
 
         /// <summary>
         /// Сообщает о том что комната создана.
@@ -59,6 +37,26 @@ namespace server.client.gameSession
         /// <summary>
         /// Отправляет клинту новое значение скорости движения.
         /// </summary>
-        public IInput<int> I_characterMoveSpeed;
+        public IInput<int> IRoom_characterMoveSpeed;
+
+        /// <summary>
+        /// Полученый урон.(Вычетает значение из HP и Shield)
+        /// </summary>
+        public IInput<int> IRoom_characterSubstractHS;
+
+        /// <summary>
+        /// Вычесть ману.(враг может сжеч ману)
+        /// </summary>
+        public IInput<int> IRoom_characterSubstractMP;
+
+        /// <summary>
+        /// Полученый урон.(Вычетает значение из HP, Shield и MP)
+        /// </summary>
+        public IInput<int, int> IRoom_characterSubstractHSM;
+
+        /// <summary>
+        /// Начать атаку.
+        /// </summary>
+        public IInput<int, int> IRoom_characterDefaultAttack;
     }
 }
