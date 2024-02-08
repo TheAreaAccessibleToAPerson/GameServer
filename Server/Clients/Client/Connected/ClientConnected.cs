@@ -6,6 +6,8 @@ namespace server.client
     {
         void Construction()
         {
+            ItemsManager.ClientKey = GetKey();
+
             BDData.Index = Field.BDIndex;
 
             input_to(ref I_sendMessageToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
@@ -16,6 +18,9 @@ namespace server.client
             input_to(ref I_send5MessagesToClient, Header.Events.TCP_SEND, Field.Tcp.Send);
 
             send_message(ref I_clientLogger, Logger.Type.CLIENT);
+            {
+                ItemsManager.I_clientLogger = I_clientLogger;
+            }
 
             input_to(ref I_process, Header.Events.SYSTEM, Process);
 
@@ -99,7 +104,7 @@ namespace server.client
                 }
             });
 
-            input_to(ref Data.IRoom_creatingMob, Header.Events.CLIENT, (mob) => 
+            input_to(ref Data.IRoom_creatingMob, Header.Events.CLIENT, (mob) =>
             {
                 lock (State.Locker)
                 {
@@ -107,7 +112,11 @@ namespace server.client
                     {
                         LoggerInfo($"Creating mob:ID{mob.ID}");
 
-                        I_sendMessageToClient.To(GetCreatingMobMessage(mob));
+                        I_send2MessagesToClient.To
+                        (
+                            GetCreatingMobMessage(mob),
+                            GetCreatingEnemyMobBar(mob)
+                        );
                     }
                     else LoggerWarning("Пришло сообщение из комнаты в момент когда состояния клента: " +
                         $"{State.CurrentState}.");

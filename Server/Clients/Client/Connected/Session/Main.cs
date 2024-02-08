@@ -12,6 +12,10 @@ namespace server.client.gameSession
         protected readonly State State = new();
         protected IInput<int, string> I_clientLogger;
 
+        //---------------------ITEMS------------------------
+        protected readonly ItemsManager ItemsManager = new();
+        //--------------------------------------------------
+
         //---------------------BD---------------------------
         /// <summary>
         /// Загружаем данные клиента.
@@ -287,6 +291,8 @@ namespace server.client.gameSession
                 unchecked((byte)NetWork.Server.CreatingEnemyMobBar.TYPE),
 
                 (byte)(mob.BarName >> 8), (byte)(mob.BarName),
+
+                (byte)(mob.ID >> 8), (byte)(mob.ID),
 
                 (byte)(mob.HP >> 24), (byte)(mob.HP >> 16),
                 (byte)(mob.HP >> 8), (byte)(mob.HP),

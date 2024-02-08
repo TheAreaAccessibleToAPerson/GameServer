@@ -47,7 +47,7 @@ namespace server.client.gameSession
                                     170, 
                                     210, 
                                     140,
-                                    100,
+                                    1000,
                                     100,
                                     100)
                                 },

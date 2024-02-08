@@ -347,12 +347,15 @@ public struct NetWork
         public struct CreatingEnemyMobBar
         {
             public const int TYPE = NetWork.Server.CREATING_ENEMY_MOB_BAR;
-            public const int LENGTH = NetWork.HEADER_LENGTH + 26;
+            public const int LENGTH = NetWork.HEADER_LENGTH + 28;
 
             public const int CREATING_BAR_NAME_1BYTE_INDEX = NetWork.HEADER_LENGTH;
             public const int CREATING_BAR_NAME_2BYTE_INDEX = CREATING_BAR_NAME_1BYTE_INDEX + 1;
 
-            public const int CREATING_BAR_HP_1BYTE_INDEX = CREATING_BAR_NAME_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_MOB_ID_1BYTE_INDEX = CREATING_BAR_NAME_2BYTE_INDEX + 1;
+            public const int CREATING_BAR_MOB_ID_2BYTE_INDEX = CREATING_BAR_MOB_ID_1BYTE_INDEX + 1;
+
+            public const int CREATING_BAR_HP_1BYTE_INDEX = CREATING_BAR_MOB_ID_2BYTE_INDEX + 1;
             public const int CREATING_BAR_HP_2BYTE_INDEX = CREATING_BAR_HP_1BYTE_INDEX + 1;
             public const int CREATING_BAR_HP_3BYTE_INDEX = CREATING_BAR_HP_2BYTE_INDEX + 1;
             public const int CREATING_BAR_HP_4BYTE_INDEX = CREATING_BAR_HP_3BYTE_INDEX + 1;

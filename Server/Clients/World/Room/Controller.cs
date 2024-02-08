@@ -35,12 +35,14 @@ namespace server.client.world.room
 
             lastAttack += delta;
 
-            if (_isAttack == false)
+            if (_isAttack == true || lastAttack > 2000)
             {
-                if (lastAttack > 2000)
+                if (lastAttack > 100)
                 {
-                    Console("ATTACK");
+                    //Console("ATTACK");
                     Field.ClientData.IRoom_characterDefaultAttack.To(10, 25);
+
+                    lastAttack = 0;
 
                     _isAttack = true;
                 }
